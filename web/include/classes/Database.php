@@ -1,6 +1,6 @@
 <?php
 
-require ("../variables.php");
+require ($document_root . "/newdir/include/variables.php");
 
 class Database {
 

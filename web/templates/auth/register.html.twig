@@ -1,0 +1,52 @@
+{% extends "auth/base.html.twig" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <div class="wrapper border rounded px-5" style="background-color: #f5f5f5;">
+        <img src="../assets/calid_logo_small.png" alt="Calid Logo">
+        <h2>Register</h2>
+        <p>Please register using this form for access to Calid</p>
+
+        <form style="form-signin" action="" method="post">
+            <div class="form-group mb-2">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control ml-1" placeholder="Username" required autofocus>
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="email">E-mail address:</label>
+                <input type="text" id="email" name="email" class="form-control ml-1" placeholder="john@example.com" required>
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control ml-1" placeholder="Password" required>
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="confirm_password">Confirm password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control ml-1" placeholder="Confirm password" required>
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="access_code">Access code:</label>
+                <input type="text" id="access_code" name="access_code" class="form-control ml-1" placeholder="A12CD3" required>
+                <span class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label for="tc_check">Do you accept the T&Cs?</label>
+                <input type="checkbox" id="tc_check" name="tc_check" class="form-check-inline ml-2" required>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary btn-block mt-3 mx-3" value="Register">
+                <a href="login.php" class="btn btn-success btn-block mt-3 mx-3">Return to login</a>
+                <hr>
+                <p class="mt-3 text-muted">Server: {{ server_name }}</p>
+                <p class="mt-1 mb-3 text-muted">&copy; <script>document.write(new Date().getFullYear())</script> Zach Matcham</p>
+            </div>
+        </form>
+    </div>
+{% endblock %}

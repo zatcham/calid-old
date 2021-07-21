@@ -1,0 +1,154 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Dashboard {% endblock %}
+{{ title }}
+
+{% block header %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Sensors assigned:
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white">{{ sensors_assigned }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-link fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Sensors online:
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white">{{ sensors_online }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-power-off fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-orange shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Sensors with alerts:
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white">{{ sensors_alerts }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
+                                Sensors offline:
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-white">{{ sensors_offline }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-circle fa-2x text-gray-800"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Average temperature for today
+                </div>
+                <div class="card-body">
+                    <div id="chart-temperature" class="container"></div>
+                    <div id="chartnx-temp" class="container">
+                        There is either no temperature data available for the past 24 hours, or an error has
+                        occured.
+                    </div>
+                    {{ temp_graph }}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Average humidity for today <!-- TODO : Add temp / hum avg cahrt -->
+                </div>
+                <div class="card-body">
+                    <div id="chart-humidity" class="container"></div>
+                    <div id="chartnx-hum" class="container">
+                        There is either no humidity data available for the past 24 hours, or an error has
+                        occured.
+                    </div>
+                    {{ hum_graph }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            DataTable Example
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script>
+        var objt = $('#chart-temperature');
+        if ((!$.trim(objt.html()).length) === false) {
+            $('#chartnx-temp').css('display', 'none');
+        }
+
+        var objh = $('#chart-humidity');
+        if ((!$.trim(objh.html()).length) === false) {
+            $('#chartnx-hum').css('display', 'none');
+        }
+    </script>
+
+{% endblock %}

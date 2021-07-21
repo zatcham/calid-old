@@ -11,28 +11,18 @@ use Twig\Loader\FilesystemLoader;
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
-
 // twig init
 $loader = new FilesystemLoader('../../templates');
 $twig = new Environment($loader);
-$twig->addGlobal('session', $_SESSION);
+//$twig->addGlobal('session', $_SESSION);
 
 // varaibles used for functs
-$userid = $_SESSION["id"];
-$username = $_SESSION["username"];
 
 // render page from template
 try {
-    echo $twig->render('sensor_list.html.twig',
+    echo $twig->render('auth/reset_pass.html.twig',
         ['server_name' => $server_name,
-            'page_title' => 'Sensor',
-            'page_subtitle' => 'List sensors',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
-            'current_user' => $username,
+            'page_title' => 'Reset Password',
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

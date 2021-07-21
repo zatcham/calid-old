@@ -44,7 +44,7 @@ class Sensor {
     // gets sensors with alerts. TODO : make alert system / table
     public static function getAlertedSensorCount($userid) {
         $dbconn = Database::Connect();
-        $sqlq = "SELECT COUNT(`SensorID`) FROM sensor_alerts INNER JOIN `sensor_details` ON `sensor_alerts`.SensorID =`sensor_details`.SensorID WHERE `sensor_details.UserID`=? && `sensor_alerts.Date/Time` > DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
+        $sqlq = "SELECT COUNT(`sensor_alerts`.`SensorID`) FROM sensor_alerts INNER JOIN `sensor_details` ON `sensor_alerts`.SensorID =`sensor_details`.SensorID WHERE `sensor_details`.`UserID`=? && `sensor_alerts`.`Date/Time` > DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("s", $userid);
         $stmt->execute();

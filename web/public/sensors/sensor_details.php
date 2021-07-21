@@ -27,10 +27,10 @@ $username = $_SESSION["username"];
 
 // render page from template
 try {
-    echo $twig->render('sensor_list.html.twig',
+    echo $twig->render('sensor_details.html.twig',
         ['server_name' => $server_name,
             'page_title' => 'Sensor',
-            'page_subtitle' => 'List sensors',
+            'page_subtitle' => 'Details for sensor x',
             'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
             'current_user' => $username,
         ]);

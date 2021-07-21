@@ -1,4 +1,5 @@
 <?php
+
 require ("../variables.php");
 require("Database.php");
 
