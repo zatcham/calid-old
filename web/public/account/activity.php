@@ -20,6 +20,7 @@ session_start();
 $loader = new FilesystemLoader('../../templates');
 $twig = new Environment($loader);
 $twig->addGlobal('session', $_SESSION);
+$twig->addGlobal('file_path', $directory_path);
 
 // varaibles used for functs
 $userid = $_SESSION["id"];
@@ -33,6 +34,7 @@ try {
             'page_subtitle' => 'Activity',
             'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
             'current_user' => $username,
+            'file_path' => $directory_path,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

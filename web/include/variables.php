@@ -23,5 +23,6 @@ $db_prefix = "sensor";
 //$db_prefix = "sensor";
 
 $server_name = "DEV1";
-$project_name = "Sensor";
+$project_name = "Calid";
+$directory_path = "/calid/newdir/public"; // different to root dir
 ?>

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $login_success = "Login success, redirecting...";
                                 $stmt->close();
                                 // Redirect user to welcome page
-                                header("location: home.php");
+                                header("location: ../home.php");
                             } else {
                                 // Password is incorrect
                                 $login_error = "Invalid username or password.";

@@ -1,9 +1,9 @@
 <?php
-$doc_root = $_SERVER['DOCUMENT_ROOT'];
-require '..\vendor\autoload.php';
-require '..\include\classes\Database.php';
-require '..\include\classes\Sensor.php';
-require '..\include\classes\Auth.php';
+$document_root = $_SERVER['DOCUMENT_ROOT'];
+require $document_root . '\newdir\vendor\autoload.php';
+require $document_root . '\newdir\include\classes\Database.php';
+require $document_root . '\newdir\include\classes\Sensor.php';
+require $document_root . '\newdir\include\classes\Auth.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -19,6 +19,7 @@ session_start();
 $loader = new FilesystemLoader('../templates');
 $twig = new Environment($loader);
 $twig->addGlobal('session', $_SESSION);
+$twig->addGlobal('file_path', $directory_path);
 
 // varaibles used for functs
 $userid = $_SESSION["id"];
@@ -42,7 +43,7 @@ try {
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error");
+    echo ("Error loading page : Twig syntax error . $e");
 }
 
 ?>

@@ -20,6 +20,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 $loader = new FilesystemLoader('../../templates');
 $twig = new Environment($loader);
 $twig->addGlobal('session', $_SESSION);
+$twig->addGlobal('file_path', $directory_path);
 
 // varaibles used for functs
 $userid = $_SESSION["id"];
