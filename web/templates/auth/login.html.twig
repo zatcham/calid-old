@@ -9,10 +9,10 @@
     <h2>Calid Login</h2>
     <p>Please fill in your credentials to login.</p>
 
-    {% if login_error.name is not empty %}
+    {% if login_error is not empty %}
         <div class="alert alert-danger">{{ login_error }}</div>
     {% endif %}
-    {% if login_success.name|default %}
+    {% if login_success is not empty %}
         <div class="alert alert-success">'{{ login_success }}'</div>
     {% endif %}
 

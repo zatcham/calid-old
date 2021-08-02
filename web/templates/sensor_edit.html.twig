@@ -6,7 +6,87 @@
 {% endblock %}
 
 {% block content %}
-No content yet
+    {% if errors is not empty %}
+        <div class="alert alert-danger">{{ errors }}</div>
+    {% endif %}
+    {% if no_sensor %}
+        <h5>Error: A sensor has not been selected.</h5>
+        <br>
+        <p>Please return to the sensor list and try again.</p>
+        <br>
+        <a href="list_sensors.php" class="btn btn-block btn-primary">Go back</a>
+    {% endif %}
+    {% if no_data %}
+        Error: There was an error whilst attempting to retrieve data for the selected sensor. Please return to the sensor list and try again.
+        <a href="list_sensors.php" class="btn btn-block btn-primary">Go back</a>
+    {% endif %}
+    {% if errors is empty %}
+        <form id="edit_sensor_form" action="" method="POST">
+            <div class="input-group mb-3 row">
+                <label for="sensor_id" class="col-sm-2 col-form-label">Sensor ID: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sensor_id" value="{{ sensor_id }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="sensor_name" class="col-sm-2 col-form-label">Sensor Name: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sensor_name" value="{{ sensor_name }}">
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="sensor_type" class="col-sm-2 col-form-label">Sensor Type: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sensor_type" value="{{ sensor_type }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="sensor_location" class="col-sm-2 col-form-label">Sensor Location: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sensor_location" value="{{ sensor_location }}">
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="data_types" class="col-sm-2 col-form-label">Data Types: </label>
+                <div class="col-sm-10">
+                    <input type="checkbox" class="form-control" id="data_types" value="{{ data_types }}">
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="last_seen" class="col-sm-2 col-form-label">Last Seen: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="last_seen" value="{{ last_seen }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="api_key" class="col-sm-2 col-form-label">API Key: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="api_key" value="{{ api_key }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="sw_version" class="col-sm-2 col-form-label">Software Version: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="sw_version" value="{{ sw_ver }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="show_on_avg" class="col-sm-2 col-form-label form-check-label">Show on average graphs?: </label>
+                <div class="col-sm-10">
+                    <input type="checkbox" class="form-check-input" id="show_on_avg" value="1" checked="{% if show_avg == 1 %}checked{% else %}{% endif %}">
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="status" class="col-sm-2 col-form-label">Current Status: </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="status" value="{{ status }}" readonly>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}

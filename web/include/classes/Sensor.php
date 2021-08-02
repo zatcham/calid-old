@@ -79,4 +79,231 @@ class Sensor {
         $dbconn->close();
     }
 
+    // following functs are used for the edit sensor page
+
+    public static function doesSensorBelongTo($sensor_id, $userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT COUNT(`SensorName`) FROM sensor_details WHERE `SensorID` = ? AND `UserID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("ss", $sensor_id, $userid); // no error handling as cant be logged in w/ wrong id
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($val);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            if ($val >= 1) { // could use bool but error is a string
+                return "Yes";
+            } else {
+                return "No";
+            }
+        }
+    }
+
+    public static function getSensorName($sensorid) { // a lot of these types of functs are copied ,, we assume the sensor velongs to user
+        $dbconn = Database::Connect();
+        $sql = "SELECT `SensorName` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);  // functs wont run if invalid id based on prev. valdation
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorType($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `SensorType` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorLocation($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `SensorLoc` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorDataTypes($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `DataTypes` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorLastSeen($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `LastSeen` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorAPIKey($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `APIKey` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorSharedWith($sensorid) { // TODO : Shared with functionalty
+        $dbconn = Database::Connect();
+        $sql = "SELECT `LastSeen` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorSWVersion($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `SWVersion` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorShowOnAvg($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `show_on_avg` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getSensorStatus($sensorid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `Status` FROM sensor_details WHERE `SensorID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $sensorid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function updateSensorStatus($sensorid, $statusid) {
+        $dbconn = Database::Connect();
+        $sqlq = ("UPDATE sensor_details SET `Status`=? WHERE `SensorID`=?;");
+        $stmt = $dbconn->prepare($sqlq);
+        $stmt->bind_param("ss", $statusid, $sensorid);
+        $stmt->execute(); // we run the func once per sensor, no bulk yet
+        log("uSS - updated succesfuly. Sensor ID : " . $sensorid . " Status ID : " . $statusid);
+        $stmt->close();
+        $dbconn->close();
+    }
+
+
 }

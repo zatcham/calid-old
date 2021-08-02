@@ -1,7 +1,7 @@
 <?php
-
-require ("../variables.php");
-require("Database.php");
+$document_root = $_SERVER['DOCUMENT_ROOT'];
+require ($document_root . "/newdir/include/variables.php");
+//require("Database.php"); // We assume this is already added
 
 class Graph {
 
@@ -29,8 +29,6 @@ class Graph {
         $dt = $dt ?? '';
         if ($i == 1) {
             $jsout = <<<JSOUT
-<script>
-
     var temp = $temp
     var dtt = $dt
     var randomColorFactor = function() {
@@ -61,9 +59,6 @@ class Graph {
         },
         credits: { enabled: false }
     });
-
-
-</script>
 
 JSOUT;
             return ($jsout . "");
@@ -96,7 +91,6 @@ JSOUT;
         $dt = $dt ?? '';
         if ($i == 1) {
             $jsout = <<<JSOUT
-<script>
 
     var hum = $hum
     var dth = $dt
@@ -128,9 +122,6 @@ JSOUT;
         },
         credits: { enabled: false }
     });
-
-
-</script>
 
 JSOUT;
             return ($jsout . "");
@@ -162,7 +153,6 @@ JSOUT;
         $dt = $dt ?? '';
         if ($i == 1) {
             $jsout = <<<JSOUT
-<script>
 
     var hum = $hum
     var dth = $dt
@@ -194,9 +184,6 @@ JSOUT;
         },
         credits: { enabled: false }
     });
-
-
-</script>
 
 JSOUT;
             return ($jsout . "");

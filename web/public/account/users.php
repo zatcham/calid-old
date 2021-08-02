@@ -25,11 +25,35 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
+$errors = "";
+
+
+// get data
+$dbconn = Database::Connect();
+$sqlq = "SELECT `username`, `email`, `UserRole`, `created_at`, `LastPWChange` FROM users";
+$stmt = $dbconn->prepare($sqlq);
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$stmt->execute();
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+if ($data) { // should mean some data exists
+    $no_data = False;
+    $table_data = $data;
+//    echo '<pre>'; print_r($data); echo '</pre>';
+} else { // no data or error
+    $no_data = True;
+    $table_data = "none";
+}
+
 
 // render page from template
 if (Auth::isUserAdmin($userid) == False) { // can only access as am admin
         // Do error
-    echo ("Unauthorised");
+    echo ("Unauthorised"); // TODO: Change to error
 } else {
     try {
         echo $twig->render('account_users.html.twig',
@@ -38,6 +62,9 @@ if (Auth::isUserAdmin($userid) == False) { // can only access as am admin
                 'page_subtitle' => 'Users',
                 'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
                 'current_user' => $username,
+                'no_data' => $no_data,
+                'table_data' => $table_data,
+                'errors' => $errors,
             ]);
     } catch (\Twig\Error\LoaderError $e) {
         echo ("Error loading page : Twig loader error");

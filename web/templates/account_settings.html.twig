@@ -6,6 +6,12 @@
 {% endblock %}
 
 {% block content %}
+    {% if form_error is not empty %}
+        <div class="alert alert-danger">{{ form_error }}</div>
+    {% endif %}
+    {% if form_success is not empty %}
+        <div class="alert alert-success">{{ form_success }}</div>
+    {% endif %}
 <div class="row">
     <form id="email_form" action="" method="POST">
         <div class="input-group mb-3 row">

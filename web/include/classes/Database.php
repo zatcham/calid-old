@@ -19,6 +19,4 @@ class Database {
         // TODO : Maybe this
     }
 
-
-
 }

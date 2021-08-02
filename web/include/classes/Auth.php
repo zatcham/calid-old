@@ -20,7 +20,7 @@ class Auth {
 
     public static function addLoginAttempt($userid, $ip, $attempt_type) {
         $dbconn = Database::Connect();
-        $sqlq = "INSERT INTO access_attempts (`UserID`, `ip_address`, `attempt_type`) VALUES (?, ?, ?)";
+        $sqlq = "INSERT INTO access_attempts (`user_id`, `ip_address`, `attempt_type`) VALUES (?, ?, ?)";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("sss", $userid, $ip, $attempt_type);
         $stmt->execute();

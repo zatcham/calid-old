@@ -25,6 +25,29 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
+$errors = "";
+
+
+// get data
+$dbconn = Database::Connect();
+$sqlq = "SELECT `SensorID`,`SensorName`, `SensorType`, `SensorLoc`, `DataTypes`, `LastSeen`, `APIKey`, `SWVersion`, `show_on_avg`, `Status` FROM sensor_details WHERE `UserID`=$userid"; // TODO : no prepared statment ....
+$stmt = $dbconn->prepare($sqlq);
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$stmt->execute();
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+if ($data) { // should mean some data exists
+    $no_data = False;
+    $table_data = $data;
+//    echo '<pre>'; print_r($data); echo '</pre>';
+} else { // no data or error
+    $no_data = True;
+    $table_data = "none";
+}
 
 // render page from template
 try {
@@ -34,13 +57,16 @@ try {
             'page_subtitle' => 'List sensors',
             'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
             'current_user' => $username,
+            'no_data' => $no_data,
+            'table_data' => $table_data,
+            'errors' => $errors,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error");
+    echo ("Error loading page : Twig syntax error $e");
 }
 
 ?>

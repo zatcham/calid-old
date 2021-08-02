@@ -60,23 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 // Password is incorrect
                                 $login_error = "Invalid username or password.";
                                 Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Fail");
-                                echo ("Error 1");
                             }
                         }
                     } else {
                         // Username doesn't exist
                         $login_error = "Invalid username or password."; // we cant log this as no usr name | well we could i guess....
-                        echo ("Error 2");
                     }
                 } else {
                     $login_error = "Oops! Something went wrong. Please try again later.";
-                    echo ("Error 3");
                 }
             }
         }
     }
 }
-
 
 // varaibles used for functs
 

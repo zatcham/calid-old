@@ -8,7 +8,30 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if errors is not empty %}
+        <div class="alert alert-danger">{{ errors }}</div>
+    {% endif %}
+    {% if no_data %}
+        No sensors
+    {% else %}
+        <form id="select_form" action="" method="POST">
+            <div class="input-group mb-3 row">
+                <label for="sensor-select" class="col-sm-2 col-form-label">Sensor:</label>
+                <select class="form-select" id="sensor-select" style="width: 20em;">
+                {% for sub_array in sensors %}
+                    {% if selected == sub_array.SensorID %}
+                        <option value="{{ sub_array.SensorID }}" selected>{{ sub_array.SensorName }}</option>
+                    {% else %}
+                        <option value="{{ sub_array.SensorID }}">{{ sub_array.SensorName }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Submit</button>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}

@@ -4,6 +4,7 @@ require $document_root . '\newdir\vendor\autoload.php';
 require $document_root . '\newdir\include\classes\Database.php';
 require $document_root . '\newdir\include\classes\Sensor.php';
 require $document_root . '\newdir\include\classes\Auth.php';
+require $document_root . '\newdir\include\classes\Graph.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -29,14 +30,16 @@ $username = $_SESSION["username"];
 try {
     echo $twig->render('home.html.twig',
         ['server_name' => $server_name,
-            'page_title' => 'Test',
-            'page_subtitle' => 'Sub test',
+            'page_title' => 'Dashboard',
+            'page_subtitle' => '',
             'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
             'current_user' => $username,
             'sensors_assigned' => Sensor::getAssignedSensorCount($userid),
             'sensors_online' => Sensor::getOnlineSensorCount($userid),
             'sensors_offline' => Sensor::getOfflineSensorCount($userid),
-            'sensors_alerts' => Sensor::getAlertedSensorCount($userid)
+            'sensors_alerts' => Sensor::getAlertedSensorCount($userid),
+            'hum_graph' => Graph::getAvgHumGraph($userid),
+            'temp_graph' => Graph::getAvgTempGraph($userid),
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

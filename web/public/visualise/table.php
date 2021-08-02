@@ -25,6 +25,42 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
+$errors = "";
+$selected_sensor = "";
+
+// get data
+$dbconn = Database::Connect();
+$sqlq = "SELECT `SensorID`, `SensorName` FROM sensor_details WHERE `UserID`=$userid;"; // should be no risk of sql injection
+$stmt = $dbconn->prepare($sqlq);
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$stmt->execute();
+if ($stmt == False) {
+    $errors = "Error encountered whilst trying to query database";
+}
+$data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+if ($data) { // should mean some data exists
+    $no_data = False;
+    $select_data = $data;
+    print_r($data);
+//    echo '<pre>'; print_r($data); echo '</pre>';
+} else { // no data or error
+    $no_data = True;
+    $select_data = "none";
+}
+
+// when selected
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST)) {
+        if (!empty($_POST['sensor-select'])) {
+            $errors = $_POST['sensor-select'];
+            $selected_sensor = $_POST['sensor-select'];
+        }
+    }
+}
+
+
 
 // render page from template
 try {
@@ -34,13 +70,16 @@ try {
             'page_subtitle' => 'Data tables',
             'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
             'current_user' => $username,
+            'errors' => $errors,
+            'sensors' => $select_data,
+            'selected_sensor' => $selected_sensor,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error");
+    echo ("Error loading page : Twig syntax error " . $e);
 }
 
 ?>
