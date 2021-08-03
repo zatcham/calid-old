@@ -305,5 +305,62 @@ class Sensor {
         $dbconn->close();
     }
 
+    public static function getStatusName($statusid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `Name` FROM sensor_statustypes WHERE `ID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("i", $statusid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($name);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $name;
+        }
+    }
+
+    public static function getListOfDataTypes() {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `ID`, `Name` FROM sensor_datatypes;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->execute();
+        if ($stmt == False) {
+            return "Error";
+        }
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($data) { // should mean some data exists
+            return ($data);
+        } else { // no data or error
+            return ($data);
+        }
+    }
+
+    public static function getListOfStatusTypes() {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `ID`, `Name` FROM sensor_statustypes;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->execute();
+        if ($stmt == False) {
+            return "Error";
+        }
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($data) { // should mean some data exists
+            return ($data);
+        } else { // no data or error
+            return ($data);
+        }
+    }
+
 
 }

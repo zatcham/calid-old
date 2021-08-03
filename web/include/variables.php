@@ -1,5 +1,6 @@
 <?php
 //
+// 
 // Uncomment for dev
 $db_host = "localhost";
 $db_name = "sensor";

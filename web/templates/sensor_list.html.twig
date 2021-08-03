@@ -12,7 +12,7 @@
         <div class="alert alert-danger">{{ errors }}</div>
     {% endif %}
     {% if no_data %}
-        No data found {# TODO: change to data table to allow click #}
+        <div class="alert alert-danger">No data was found</div>
     {% else %}
         <table class="table" id="sensorTable">
             <thead>
@@ -33,25 +33,13 @@
             {% for sub_array in table_data %}
                 <tr>
                     {% for key, value in sub_array %}
-                        {% if key == "show_on_avg" %}
+                        {% if key == "show_on_avg" %} {# This does not require storing in the db #}
                             {% if value == "1" %}
                                 <td>Yes</td>
                             {% else %}
                                 <td>No</td>
                             {% endif %}
-                        {% elseif key == "DataTypes" %}
-                            {% if value == "1" %}
-                                <td>Temperature</td>
-                            {% elseif value == "2" %}
-                                <td>Humidity</td>
-                            {% elseif value == "3" %}
-                                <td>UV</td>
-                            {% elseif value == "1,2" %}
-                                <td>Temperature, Humidity</td>
-                            {% elseif value == "1,2,3" %}
-                                <td>Temperature, Humidity, UV</td>
-                            {% endif %}
-                        {% elseif key == "SensorID" %}
+                        {% elseif key == "SensorID" %} {# we don't want the sensorid to show on table, so this skips it #}
                         {% else %}
                             <td>{{ value }}</td>
                         {% endif %}
@@ -67,7 +55,8 @@
 {% block footer %}
     <script>
         $(document).ready( function () {
-            $('#sensorTable').DataTable();
+            var data_table = $('#sensorTable').DataTable();
+            {{ sorting_js|raw }}
         } );
     </script>
 {% endblock %}
