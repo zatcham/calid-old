@@ -11,7 +11,7 @@ class Auth {
         $stmt -> store_result();
         $stmt -> bind_result($r);
         $stmt -> fetch();
-        if ($r == "2") { // 2 = admin, 1 = user, 0 = not verified
+        if ($r == "2") { // 2 = admin, 1 = user, 3 = not verified | could do db lookup but why bother
             return True;
         } else {
             return False;

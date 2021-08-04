@@ -5,6 +5,7 @@ require $document_root . '\newdir\vendor\autoload.php';
 require $document_root . '\newdir\include\classes\Database.php';
 require $document_root . '\newdir\include\classes\Sensor.php';
 require $document_root . '\newdir\include\classes\Auth.php';
+require $document_root . '\newdir\include\classes\Account.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -42,6 +43,12 @@ if ($stmt == False) {
 $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 if ($data) { // should mean some data exists
     $no_data = False;
+    foreach($data as $key => $value) { // Replace user role ID with corespodning name
+        $user_role = (intval($data[$key]['UserRole']) - 1);
+        $user_roles = Account::getListOfUserRoles();
+        $role_as_str = ($user_roles[$user_role]['Name']);
+        $data[$key]['UserRole'] = $role_as_str;
+    }
     $table_data = $data;
 //    echo '<pre>'; print_r($data); echo '</pre>';
 } else { // no data or error
@@ -53,14 +60,14 @@ if ($data) { // should mean some data exists
 // render page from template
 if (Auth::isUserAdmin($userid) == False) { // can only access as am admin
         // Do error
-    echo ("Unauthorised"); // TODO: Change to error
+    header("Location: ../error/403.html"); // TODO : sort out error pages
 } else {
     try {
         echo $twig->render('account_users.html.twig',
             ['server_name' => $server_name,
                 'page_title' => 'Account',
                 'page_subtitle' => 'Users',
-                'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+                'user_isadmin' => Auth::isUserAdmin($userid),
                 'current_user' => $username,
                 'no_data' => $no_data,
                 'table_data' => $table_data,

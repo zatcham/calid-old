@@ -30,11 +30,13 @@ $create_date = Account::getDateCreated($userid);
 $user_email = Account::getEmailAddress($userid);
 $form_error = $form_success = "";
 
-if (Auth::isUserAdmin($userid)) {
-    $user_role = "Administrator";
-} else {
-    $user_role = "Standard User";
-}
+//if (Auth::isUserAdmin($userid)) {
+//    $user_role = "Administrator";
+//} else {
+//    $user_role = "Standard User";
+//}
+
+$user_role = Account::getUserRoleName(Account::getUserRole($userid));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) {

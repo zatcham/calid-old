@@ -118,4 +118,64 @@ class Account {
             return True;
         }
     }
+
+    // Gets array of user roles
+    public static function getListOfUserRoles() {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `ID`, `Name` FROM user_roles;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->execute();
+        if ($stmt == False) {
+            return "Error";
+        }
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($data) { // should mean some data exists
+            return ($data);
+        } else { // no data or error
+            return ($data);
+        }
+    }
+
+    // gets user role from db
+    public static function getUserRole($userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `UserRole` FROM users WHERE `id` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($date);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $date;
+        }
+    }
+
+    public static function getUserRoleName($userrole) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `Name` FROM user_roles WHERE `ID` = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("i", $userrole);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($name);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $name;
+        }
+    }
+
 }
