@@ -32,7 +32,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Dashboard',
             'page_subtitle' => '',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
             'sensors_assigned' => Sensor::getAssignedSensorCount($userid),
             'sensors_online' => Sensor::getOnlineSensorCount($userid),

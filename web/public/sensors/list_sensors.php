@@ -85,10 +85,6 @@ if ($data) { // should mean some data exists
     $table_data = "none";
 }
 
-
-
-// TODO : replace status with name
-
 // render page from template
 try {
     echo $twig->render('sensor_list.html.twig',

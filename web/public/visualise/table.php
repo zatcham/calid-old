@@ -68,7 +68,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Visualise',
             'page_subtitle' => 'Data tables',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
             'errors' => $errors,
             'sensors' => $select_data,

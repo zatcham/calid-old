@@ -55,7 +55,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Account',
             'page_subtitle' => 'Activity',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
             'no_data' => $no_data,
             'table_data' => $table_data,

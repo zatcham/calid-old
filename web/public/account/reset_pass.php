@@ -73,7 +73,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Account',
             'page_subtitle' => 'Reset Password',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
             'reset_success' => $reset_success,
             'reset_error' => $reset_error,

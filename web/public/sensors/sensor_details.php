@@ -32,7 +32,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Sensor',
             'page_subtitle' => 'Details for sensor x',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
         ]);
 } catch (\Twig\Error\LoaderError $e) {

@@ -32,7 +32,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Visualise',
             'page_subtitle' => 'Graphing',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
