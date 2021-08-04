@@ -27,29 +27,99 @@ $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
 // false means data, true means none
 $no_data = False;
-$errors = "";
+$errors = $form_success = "";
+$form_success_list = [];
 $sensor_name = $sensor_id = $sensor_type = $sensor_location = "";
-$data_types = $last_seen = $api_key = $sw_version = $show_on_avg = $status = "";
+$data_types = $last_seen = $api_key = $sw_version = $show_on_avg = $status = $current_data_type = "";
 
 if (!$_GET) {
     $no_sensor = True;
+    $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
 } else {
-    $no_sensor = False;
-    $sensor_id = $_GET['sensor'];
-    if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") {
-        $sensor_name = Sensor::getSensorName($sensor_id);
-        $sensor_type = Sensor::getSensorType($sensor_id);
-        $sensor_location = Sensor::getSensorLocation($sensor_id);
-        $data_types = Sensor::getSensorDataTypes($sensor_id);
-        $last_seen = Sensor::getSensorLastSeen($sensor_id);
-        $api_key = Sensor::getSensorAPIKey($sensor_id);
-        $sw_version = Sensor::getSensorSWVersion($sensor_id);
-        $show_on_avg = Sensor::getSensorShowOnAvg($sensor_id);
-        $status = Sensor::getSensorStatus($sensor_id);
+    if (!empty($_GET['sensor'])) {
+        $no_sensor = False;
+        $sensor_id = $_GET['sensor'];
+        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") {
+            $sensor_name = Sensor::getSensorName($sensor_id);
+            $sensor_type = Sensor::getSensorType($sensor_id);
+            $sensor_location = Sensor::getSensorLocation($sensor_id);
+            $current_data_type = Sensor::getSensorDataTypes($sensor_id);
+            $last_seen = Sensor::getSensorLastSeen($sensor_id);
+            $api_key = Sensor::getSensorAPIKey($sensor_id);
+            $sw_version = Sensor::getSensorSWVersion($sensor_id);
+            $show_on_avg = Sensor::getSensorShowOnAvg($sensor_id);
+            $status_id = Sensor::getSensorStatus($sensor_id);
+            $status = Sensor::getStatusName($status_id); // We need to convert the status from its id to its name and im a bit stupid
+            $data_types = Sensor::getListOfDataTypes(); // TODO : Convert to check boxes
+        } else {
+            $errors = "Error: The sensor specified does not belong to this user";
+        }
     } else {
-        $errors = "Error: The sensor specified does not belong to this user";
+        $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
+        $no_sensor = True;
     }
+}
 
+// TODO : Form submission
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    print_r($_POST);
+    echo (Sensor::getSensorShowOnAvg($sensor_id));
+    if (!empty($_POST)) {
+        $form_success_list = array();
+//        $sensor_id = $_POST['sensor_id'];
+        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") {
+            $count = 0;
+            if ($_POST['sensor_name'] != $sensor_name) {
+                if (Sensor::changeSensorName($sensor_id, $_POST['sensor_name'])) {
+                    $form_success_list[] = "Sensor Name";
+                    $count += 1;
+                } else {
+                    $errors = "Error encountered whilst changing 'Sensor Name'. Please try again";
+                }
+            }
+            if ($_POST['sensor_location'] != $sensor_location) {
+                if (Sensor::changeSensorLocation($sensor_id, $_POST['sensor_location'])) {
+                    $form_success_list[] = "Sensor Location";
+                    $count += 1;
+                } else {
+                    $errors = "Error encountered whilst changing 'Sensor Location'. Please try again";
+                }
+            }
+            if ($_POST['data-select'] != $current_data_type) {
+                if (Sensor::changeSensorDataTypes($sensor_id, $_POST['data-select'])) {
+                    $form_success_list[] = "Data Types";
+                    $count += 1;
+                } else {
+                    $errors = "Error encountered whilst changing 'Data Types'. Please try again";
+                }
+            }
+            if (isset($_POST['show_on_avg'])) {
+                if ($_POST['show_on_avg'] != $show_on_avg) {
+                    if (Sensor::changeSensorAverage($sensor_id, "1")) {
+                        $form_success_list[] = "Show On Average";
+                        $count += 1;
+                    } else {
+                        $errors = "Error encountered whilst changing 'Show On Average'. Please try again";
+                    }
+                }
+            } else {
+                $avg_box = (isset($_POST['show_on_avg'])) ? 1 : 0;
+                if (Sensor::changeSensorAverage($sensor_id, "0")) {
+                    $count += 1;
+                } else {
+                    $errors = "Error encountered whilst changing 'Show On Average'. Please try again";
+                }
+            }
+            if ($count > 0) {
+                $form_success = "The following options were updated successfully: ";
+            }
+
+
+        } else {
+            $errors = "Error: The sensor specified does not belong to this user";
+        }
+    }
 }
 
 // render page from template
@@ -58,7 +128,7 @@ try {
         ['server_name' => $server_name,
             'page_title' => 'Sensor',
             'page_subtitle' => 'Edit sensor',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
             'no_data' => $no_data,
             'errors' => $errors,
@@ -74,6 +144,9 @@ try {
             'sw_ver' => $sw_version,
             'show_avg' => $show_on_avg,
             'status' => $status,
+            'current_data_type' => $current_data_type,
+            'form_success' => $form_success,
+            'form_success_list' => $form_success_list,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

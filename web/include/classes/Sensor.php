@@ -54,7 +54,6 @@ class Sensor {
         return ($amount);
     }
 
-    // TODO
     public static function getAllSensors($userid) {
         $dbconn = Database::Connect();
         $sqlq = "SELECT `SensorID`, `SensorName` FROM sensor_details WHERE `UserID` = `UserID`=?;";
@@ -266,12 +265,12 @@ class Sensor {
         $stmt->bind_param("s", $sensorid);
         $stmt->execute();
         $stmt->store_result();
-        $stmt->bind_result($date);
+        $stmt->bind_result($data);
         $stmt->fetch();
         if ($stmt == False) {
             return "Error";
         } else {
-            return $date;
+            return $data;
         }
     }
 
@@ -359,6 +358,72 @@ class Sensor {
             return ($data);
         } else { // no data or error
             return ($data);
+        }
+    }
+
+    // Edit sensor form submission functs
+
+    public static function changeSensorName($sensor_id, $sensor_name) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sensor_details` SET `SensorName`=? WHERE `SensorID`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $sensor_name, $sensor_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    public static function changeSensorLocation($sensor_id, $sensor_location) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sensor_details` SET `SensorLoc`=? WHERE `SensorID`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $sensor_location, $sensor_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    public static function changeSensorDataTypes($sensor_id, $sensor_datatypes) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sensor_details` SET `DataTypes`=? WHERE `SensorID`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $sensor_datatypes, $sensor_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    public static function changeSensorAverage($sensor_id, $sensor_avetage) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sensor_details` SET `show_on_avg`=? WHERE `SensorID`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $sensor_avetage, $sensor_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
         }
     }
 
