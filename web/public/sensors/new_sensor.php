@@ -26,14 +26,31 @@ $twig->addGlobal('file_path', $directory_path);
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
 
+// varaibles for page
+$data_types = Sensor::getListOfDataTypes(); // TODO : Convert to check boxes
+$form_success = $form_error = "";
+
+
+// when form submitted
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST)) {
+
+    }
+}
+
+
 // render page from template
 try {
     echo $twig->render('sensor_new.html.twig',
         ['server_name' => $server_name,
             'page_title' => 'Sensor',
             'page_subtitle' => 'Add new sensor',
-            'user_isadmin' => Auth::isUserAdmin($userid), // TODO : user id stuff
+            'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
+            'data_types' => $data_types,
+            'form_error' => $form_error,
+            'form_success' => $form_success,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

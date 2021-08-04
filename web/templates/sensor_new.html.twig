@@ -6,7 +6,55 @@
 {% endblock %}
 
 {% block content %}
-    No content yet
+    {% if form_error is not empty %}
+        <div class="alert alert-danger">{{ form_error }}</div>
+    {% endif %}
+    {% if form_success is not empty %}
+        <div class="alert alert-success">{{ form_success }}</div>
+    {% endif %}
+    <form id="new_sensor_form" action="" method="POST">
+        <div class="input-group mb-3 row">
+            <label for="sensor_name" class="col-sm-2 col-form-label">Sensor Name: </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="sensor_name" value="{{ sensor_name }}">
+            </div>
+        </div>
+        <div class="input-group mb-3 row">
+            <label for="sensor_location" class="col-sm-2 col-form-label">Sensor Location: </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="sensor_location" value="{{ sensor_location }}">
+            </div>
+        </div>
+        <div class="input-group mb-3 row">
+            <label for="data_types" class="col-sm-2 col-form-label">Data Types: </label>
+            <div class="col-sm-10">
+                {% for sub_array in data_types %}
+                    {% if ',' in sub_array.Name %}
+                    {% else %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="dataType{{ sub_array.ID }}" value="{{ sub_array.ID }}">
+                            <label class="form-check-label" for="dataType{{ sub_array.ID }}">{{ sub_array.Name }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="input-group mb-3 row">
+            <label for="api_key" class="col-sm-2 col-form-label">API Key: </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="api_key" value="{{ api_key }}" readonly>
+            </div>
+        </div>
+        <div class="input-group mb-3 row">
+            <label for="show_on_avg" class="col-sm-2 col-form-label form-check-label">Show on average graphs?: </label>
+            <div class="col-sm-10">
+                <input type="checkbox" class="form-check-input" id="show_on_avg" value="1">
+            </div>
+            <div class="input-group mb-3">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        </div>
+    </form>
 {% endblock %}
 
 {% block footer %}
