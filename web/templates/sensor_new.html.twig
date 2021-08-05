@@ -16,13 +16,13 @@
         <div class="input-group mb-3 row">
             <label for="sensor_name" class="col-sm-2 col-form-label">Sensor Name: </label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="sensor_name" value="{{ sensor_name }}">
+                <input type="text" class="form-control" id="sensor_name" name="sensor_name" value="{{ sensor_name }}" required>
             </div>
         </div>
         <div class="input-group mb-3 row">
             <label for="sensor_location" class="col-sm-2 col-form-label">Sensor Location: </label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="sensor_location" value="{{ sensor_location }}">
+                <input type="text" class="form-control" id="sensor_location" name="sensor_location" value="{{ sensor_location }}" required>
             </div>
         </div>
         <div class="input-group mb-3 row">
@@ -32,19 +32,19 @@
                     {% if ',' in sub_array.Name %}
                     {% else %}
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="dataType{{ sub_array.ID }}" value="{{ sub_array.ID }}">
+                            <input class="form-check-input" type="checkbox" id="dataType{{ sub_array.ID }}" name="dataType{{ sub_array.ID }}" value="{{ sub_array.ID }}">
                             <label class="form-check-label" for="dataType{{ sub_array.ID }}">{{ sub_array.Name }}</label>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
-        <div class="input-group mb-3 row">
-            <label for="api_key" class="col-sm-2 col-form-label">API Key: </label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="api_key" value="{{ api_key }}" readonly>
-            </div>
-        </div>
+{#        <div class="input-group mb-3 row">#}
+{#            <label for="api_key" class="col-sm-2 col-form-label">API Key: </label>#}
+{#            <div class="col-sm-10">#}
+{#                <input type="text" class="form-control" id="api_key" value="{{ api_key }}" readonly>#}
+{#            </div>#}
+{#        </div>#}
         <div class="input-group mb-3 row">
             <label for="show_on_avg" class="col-sm-2 col-form-label form-check-label">Show on average graphs?: </label>
             <div class="col-sm-10">

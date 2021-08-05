@@ -67,7 +67,7 @@ class Sensor {
     }
 
     // TODO : this ufnc and change table row names
-    public static function addNewSensor($userid, $sensor_name, $sensor_type, $sensor_loc, $data_types, $api_key, $shared_with) {
+    public static function addNewSensorFull($userid, $sensor_name, $sensor_type, $sensor_loc, $data_types, $api_key, $shared_with) {
         $dbconn = Database::Connect();
         $sqlq = ("INSERT INTO sensor_details (UserID, SensorName, SensorType, SensorLoc, DataTypes, APIKey, SharedWith) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt = $dbconn->prepare($sqlq);
@@ -425,6 +425,80 @@ class Sensor {
         } else {
             return True;
         }
+    }
+
+    // New sensor page functs
+
+    protected static function generateAPIKey($id) { // Generates API key for sensor - appends user id to output string
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $len = strlen($chars);
+        $x = '';
+        for ($i = 0; $i < $len; $i++) {
+            $x .= $chars[rand(0, $len - 1)];
+        }
+        $x .= $id;
+        return $x;
+    }
+
+    public static function addNewSensor($userid, $sensor_name, $sensor_location, $data_type, $show_on_avg) {
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO sensor_details (`UserID`, `SensorName`, `SensorLoc`, `DataTypes`, `APIKey`, `show_on_avg`) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $api_key = self::generateAPIKey($userid);
+        $stmt->bind_param("ssssss", $userid, $sensor_name, $sensor_location, $data_type, $api_key, $show_on_avg);
+        $stmt->execute();
+        // now get the ID of the sensor
+        $sensor_id = $dbconn->insert_id;
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $sensor_id;
+        }
+    }
+
+    public static function getOverallDataType($type1, $type2, $type3) { // I need to work out from the tick boxes what overall type is selected
+        switch ($type1) {
+            case 0:
+                switch ($type2) { // - h
+                    case 0: // no h
+                        switch ($type3) { // - u
+                            case 0: // no uv
+                                return 0; // error, no t/h/u
+                                break;
+                            case 1: // yes uv
+                                return 3; // u only
+                        }
+                    case 1: // yes h
+                        switch ($type3) { // - u
+                            case 0: // no uv
+                                return 2; // h
+                            case 1: // yes uv
+                                return 5; // h + u
+                        }
+                }
+            case 1:
+                switch ($type2) { // - h
+                    case 0: // no h
+                        switch ($type3) { // - u
+                            case 0: // no uv
+                                return 1; // t
+                            case 1: // yes uv
+                                return 7; // t + u
+                        }
+                    case 1: // yes h
+                        switch ($type3) { // - u
+                            case 0: // no uv
+                                return 4; // t + h
+                            case 1: // yes uv
+                                return 6; // t + h + u
+                        }
+                }
+        }
+        return 0;
     }
 
 

@@ -46,7 +46,7 @@ if ($data) { // should mean some data exists
         // data types
         $type = (intval($data[$key]['DataTypes']) - 1); // array starts at 0, whilst sql starts at 1
         $types = Sensor::getListOfDataTypes();
-        $type_as_str = ($types[$type]['Name']);
+        $type_as_str = ($types[$type]['Name']); // if you get errors from here, its a db issue.
         $data[$key]['DataTypes'] = $type_as_str;
         // status types
         $status = (intval($data[$key]['Status']) - 1);

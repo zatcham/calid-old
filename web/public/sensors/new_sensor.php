@@ -12,7 +12,7 @@ use Twig\Loader\FilesystemLoader;
 // check session exists
 session_start();
 //if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
+//    header("location: ../auth/login.php");
 //    exit;
 //}
 
@@ -34,8 +34,45 @@ $form_success = $form_error = "";
 // when form submitted
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST)) {
-
+    if (!empty($_POST)) { // check if form has been submitted
+        // dodgy code to work out data types selected - TODO: Tidy up and make dynamic
+        if (!isset($_POST['dataType1'])) {
+            $dataType1 = 0;
+        } else {
+            $dataType1 = 1;
+        }
+        if (!isset($_POST['dataType2'])) {
+            $dataType2 = 0;
+        } else {
+            $dataType2 = 1;
+        }
+        if (!isset($_POST['dataType3'])) {
+            $dataType3 = 0;
+        } else {
+            $dataType3 = 1;
+        }
+        $data_type = Sensor::getOverallDataType($dataType1, $dataType2, $dataType3);
+         if ($data_type == 0) {
+             $form_error = "You must select at least 1 data type!";
+        } elseif (empty($_POST['sensor_name'])) {
+            $form_error = "You must enter a sensor name!";
+        } elseif (empty($_POST['sensor_location'])) {
+            $form_error = "You must enter a sensor location!";
+        }
+        if (!isset($_POST['show_on_avg'])) {
+            $show_on_avg = 0;
+        } else {
+            $show_on_avg = 1;
+        }
+        if ($form_error == "") {
+            $x = Sensor::addNewSensor($userid, $_POST['sensor_name'], $_POST['sensor_location'], $data_type, $show_on_avg);
+            if ($x !== False) {
+                $form_success = "New sensor added successfully.. redirecting you";
+                header("refresh:3 url=edit_sensor.php?sensor=$x");
+            } else {
+                $form_error = "Error encountered whilst trying to create a new sensor.";
+            }
+        }
     }
 }
 
