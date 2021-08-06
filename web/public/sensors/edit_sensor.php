@@ -31,11 +31,20 @@ $errors = $form_success = "";
 $form_success_list = [];
 $sensor_name = $sensor_id = $sensor_type = $sensor_location = "";
 $data_types = $last_seen = $api_key = $sw_version = $show_on_avg = $status = $current_data_type = "";
+$from_page = "";
 
 if (!$_GET) {
     $no_sensor = True;
     $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
 } else {
+    if (!empty($_GET['page'])) {
+        $x = $_GET['page'];
+        if ($x == "new_sensor") {
+            $from_page = "new_sensor";
+        } elseif ($x == "list_sensors") {
+            $from_page = "list_sensors";
+        }
+    }
     if (!empty($_GET['sensor'])) {
         $no_sensor = False;
         $sensor_id = $_GET['sensor'];
@@ -59,8 +68,6 @@ if (!$_GET) {
         $no_sensor = True;
     }
 }
-
-// TODO : Form submission
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     print_r($_POST);
@@ -114,8 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($count > 0) {
                 $form_success = "The following options were updated successfully: ";
             }
-
-
         } else {
             $errors = "Error: The sensor specified does not belong to this user";
         }
@@ -147,6 +152,7 @@ try {
             'current_data_type' => $current_data_type,
             'form_success' => $form_success,
             'form_success_list' => $form_success_list,
+            'from_page' => $from_page,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

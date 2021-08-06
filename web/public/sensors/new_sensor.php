@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $x = Sensor::addNewSensor($userid, $_POST['sensor_name'], $_POST['sensor_location'], $data_type, $show_on_avg);
             if ($x !== False) {
                 $form_success = "New sensor added successfully.. redirecting you";
-                header("refresh:3 url=edit_sensor.php?sensor=$x");
+                header("refresh:3 url=edit_sensor.php?sensor=$x&page=new_sensor");
             } else {
                 $form_error = "Error encountered whilst trying to create a new sensor.";
             }
