@@ -63,7 +63,7 @@ class Graph {
 JSOUT;
             return ($jsout . "");
         } else {
-            return ("There is either no temperature data available for the past 24 hours, or an error has occurred.");
+            return ("");
         }
     }
 
@@ -126,7 +126,7 @@ JSOUT;
 JSOUT;
             return ($jsout . "");
         } else {
-            return ("There is either no humidity data available for the past 24 hours, or an error has occurred.");
+            return ("");
         }
     }
 
