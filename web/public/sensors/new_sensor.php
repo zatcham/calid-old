@@ -30,13 +30,11 @@ $username = $_SESSION["username"];
 $data_types = Sensor::getListOfDataTypes(); // TODO : Convert to check boxes
 $form_success = $form_error = "";
 
-
 // when form submitted
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) { // check if form has been submitted
         // dodgy code to work out data types selected - TODO: Tidy up and make dynamic
-        if (!isset($_POST['dataType1'])) {
+        if (!isset($_POST['dataType1'])) { // sets data type vars based of checkboxes to either 1 or 0
             $dataType1 = 0;
         } else {
             $dataType1 = 1;
@@ -51,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $dataType3 = 1;
         }
-        $data_type = Sensor::getOverallDataType($dataType1, $dataType2, $dataType3);
+        $data_type = Sensor::getOverallDataType($dataType1, $dataType2, $dataType3); // gets overall type based off checkboxes
+        // eror checking
          if ($data_type == 0) {
              $form_error = "You must select at least 1 data type!";
         } elseif (empty($_POST['sensor_name'])) {
@@ -68,14 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $x = Sensor::addNewSensor($userid, $_POST['sensor_name'], $_POST['sensor_location'], $data_type, $show_on_avg);
             if ($x !== False) {
                 $form_success = "New sensor added successfully.. redirecting you";
-                header("refresh:3 url=edit_sensor.php?sensor=$x&page=new_sensor");
+                header("refresh:3 url=edit_sensor.php?sensor=$x&page=new_sensor"); // waits 3s before redirect
             } else {
                 $form_error = "Error encountered whilst trying to create a new sensor.";
             }
         }
     }
 }
-
 
 // render page from template
 try {

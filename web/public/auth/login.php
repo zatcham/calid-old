@@ -19,9 +19,10 @@ $username = $password = "";
 $username_error = $password_error = $login_error = "";
 $login_success = "";
 
-
+// if form submitted, run this code
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) {
+        // cehcks if username is empty
         if (empty(trim($_POST["username"]))) {
             $username_error = "Please enter a username.";
         } else {
@@ -35,9 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $password = trim($_POST["password"]);
         }
 
+        // if both error felids are empty, must be ok
         if (empty($username_err) && empty($password_err)) {
             $dbconn = Database::Connect();
-            $sql = "SELECT id, username, password FROM users WHERE username = ?";
+            $sql = "SELECT id, username, password FROM users WHERE username = ?"; // prepared query to stop sql injection
             if ($stmt = $dbconn->prepare($sql)) {
                 $stmt->bind_param("s", $param_username);
                 // Set parameters
@@ -51,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $_SESSION["loggedin"] = true; // password is correct
                                 $_SESSION["id"] = $id;
                                 $_SESSION["username"] = $username;
-                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Success");
+                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Success"); // adds login attempt to db
                                 $login_success = "Login success, redirecting...";
                                 $stmt->close();
                                 // Redirect user to welcome page
@@ -73,8 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
-
-// varaibles used for functs
 
 // render page from template
 try {

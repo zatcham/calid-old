@@ -63,20 +63,18 @@ if ($data) { // should mean some data exists
                 $sorting_js = "data_table.columns(8).search('Offline', true, false).draw();";
             } elseif ($_GET['view'] == "online") {
                 $sorting_js = "data_table.columns(8).search('Online', true, false).draw();";
-            } elseif ($_GET['view'] == "online") {
-                $sorting_js = "data_table.columns(8).search('Online', true, false).draw();";
             } elseif ($_GET['view'] == "assigned") {
                 $sorting_js = "data_table.columns(8).search('', true, false).draw();";
             } elseif ($_GET['view'] == "alerts") {
                 $sorting_js = "data_table.columns(8).search('Alert', true, false).draw();";
             } else {
-                $sorting_js = "data_table.columns(8).search('', true, false).draw();";
+                $sorting_js = "data_table.columns(8).search('', true, false).draw();"; // default
             }
         } else {
-            $sorting_js = "data_table.columns(8).search('', true, false).draw();";
+            $sorting_js = "data_table.columns(8).search('', true, false).draw();"; // defualt
         }
     } else {
-        $sorting_js = "data_table.columns(8).search('', true, false).draw();";
+        $sorting_js = "data_table.columns(8).search('', true, false).draw();"; // defialt
     }
 
 //    echo '<pre>'; print_r($data); echo '</pre>'; // debuging the array
@@ -103,7 +101,7 @@ try {
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error $e");
+    echo ("Error loading page : Twig syntax error");
 }
 
 ?>

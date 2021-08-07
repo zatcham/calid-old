@@ -1,7 +1,7 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT']; // TODO : Change to conf file
 
-require $document_root . '\newdir\vendor\autoload.php';
+require $document_root . '\newdir\vendor\autoload.php'; // necesary classes imported
 require $document_root . '\newdir\include\classes\Database.php';
 require $document_root . '\newdir\include\classes\Sensor.php';
 require $document_root . '\newdir\include\classes\Auth.php';
@@ -32,6 +32,7 @@ $current_pwd_err = $new_pwd_err = $confnew_pwd_err = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) {
         // Password checking
+        // form validation
         if (empty(trim($_POST["inp-cpassword"]))) {
             $reset_error = "Current password field is empty.";
             $current_pwd_err = "Please enter your current password.";
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $reset_error = "Please ensure you have used the same password in both boxes";
 //            $confnew_pwd_err = $new_pwd_err = "Make sure both passwords are the same";
         }
+        // checks password entered is same as current
         if (Account::checkPassword($userid, $_POST["inp-cpassword"]) == False) {
             $reset_error = "Current password does not match";
             $current_pwd_err = "Please enter your current password.";
@@ -55,14 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (strlen($_POST["inp-cnpassword"]) < 7) {
             $reset_error = "New password must be at least 8 characters long";
         }
-//         can now reset pwd
+        // can now reset pwd
         if ($reset_error == "") {
-                if (Account::resetPassword($userid, $_POST["inp-cnpassword"])) {
+                if (Account::resetPassword($userid, $_POST["inp-cnpassword"])) { // returns true on sucess
                     $reset_success = "Password has been reset successfully";
                 } else {
                     $reset_error = "An unexpected error has occured. Please try again.";
                 }
-
         }
     }
 }

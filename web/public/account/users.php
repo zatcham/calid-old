@@ -59,7 +59,7 @@ if ($data) { // should mean some data exists
 
 // render page from template
 if (Auth::isUserAdmin($userid) == False) { // can only access as am admin
-        // Do error
+    // not allowed here - show error
     header("Location: ../error/403.html"); // TODO : sort out error pages
 } else {
     try {

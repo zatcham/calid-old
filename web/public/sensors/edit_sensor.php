@@ -25,8 +25,7 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
-// false means data, true means none
-$no_data = False;
+$no_data = False; // false means data, true means none
 $errors = $form_success = "";
 $form_success_list = [];
 $sensor_name = $sensor_id = $sensor_type = $sensor_location = "";
@@ -37,7 +36,7 @@ if (!$_GET) {
     $no_sensor = True;
     $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
 } else {
-    if (!empty($_GET['page'])) {
+    if (!empty($_GET['page'])) { // used to set go back button desitnation
         $x = $_GET['page'];
         if ($x == "new_sensor") {
             $from_page = "new_sensor";
@@ -48,7 +47,8 @@ if (!$_GET) {
     if (!empty($_GET['sensor'])) {
         $no_sensor = False;
         $sensor_id = $_GET['sensor'];
-        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") {
+        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") { // if sensor belongs to user, do below
+            // gets all data for sensors from functs
             $sensor_name = Sensor::getSensorName($sensor_id);
             $sensor_type = Sensor::getSensorType($sensor_id);
             $sensor_location = Sensor::getSensorLocation($sensor_id);
@@ -69,14 +69,15 @@ if (!$_GET) {
     }
 }
 
+// when form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    print_r($_POST);
-    echo (Sensor::getSensorShowOnAvg($sensor_id));
+//    print_r($_POST);
+//    echo (Sensor::getSensorShowOnAvg($sensor_id));
     if (!empty($_POST)) {
-        $form_success_list = array();
+        $form_success_list = array(); // array used to show multiple items
 //        $sensor_id = $_POST['sensor_id'];
-        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") {
-            $count = 0;
+        if (Sensor::doesSensorBelongTo($sensor_id, $userid) == "Yes") { // only allow submission is sensor id is still valid
+            $count = 0; // checks if any items have been updates or not
             if ($_POST['sensor_name'] != $sensor_name) {
                 if (Sensor::changeSensorName($sensor_id, $_POST['sensor_name'])) {
                     $form_success_list[] = "Sensor Name";
@@ -111,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
             } else {
-                $avg_box = (isset($_POST['show_on_avg'])) ? 1 : 0;
+                $avg_box = (isset($_POST['show_on_avg'])) ? 1 : 0; // checkbox - doesnt report a value if not ticked
                 if (Sensor::changeSensorAverage($sensor_id, "0")) {
                     $count += 1;
                 } else {
@@ -138,7 +139,7 @@ try {
             'no_data' => $no_data,
             'errors' => $errors,
             'no_sensor' => $no_sensor,
-            // used if correct sensor submitted
+            // used if correct sensor submitted, blank vairalbe otherwise
             'sensor_name' => $sensor_name,
             'sensor_id' => $sensor_id,
             'sensor_type' => $sensor_type,

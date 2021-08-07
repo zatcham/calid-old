@@ -17,9 +17,9 @@ session_start();
 //}
 
 // twig init
-$loader = new FilesystemLoader('../../templates');
+$loader = new FilesystemLoader('../../templates'); // relative path, maybe to change this
 $twig = new Environment($loader);
-$twig->addGlobal('session', $_SESSION);
+$twig->addGlobal('session', $_SESSION); // main varaibles used
 $twig->addGlobal('file_path', $directory_path);
 
 // varaibles used for functs
@@ -29,7 +29,7 @@ $errors = "";
 
 // get data
 $dbconn = Database::Connect();
-$sqlq = "SELECT `date_time`, `ip_address`, `attempt_type` FROM access_attempts WHERE `user_id`=? ORDER BY `date_time` DESC LIMIT 100;";
+$sqlq = "SELECT `date_time`, `ip_address`, `attempt_type` FROM access_attempts WHERE `user_id`=? ORDER BY `date_time` DESC LIMIT 100;"; // only allows last 100 to be got from db
 $stmt = $dbconn->prepare($sqlq);
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
@@ -66,7 +66,6 @@ try {
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error. ". $e);
+    echo ("Error loading page : Twig syntax error. ");
 }
-
 ?>

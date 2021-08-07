@@ -1,3 +1,9 @@
+/*
+
+Calid CSS - 07/21 - Zach Matcham
+Mostly from https://startbootstrap.com/template/sb-admin but with some minor changes and additons
+
+*/
 .fixed-top, .sb-nav-fixed #layoutSidenav #layoutSidenav_nav, .sb-nav-fixed .sb-topnav {
     position: fixed;
     top: 0;
@@ -5,11 +11,9 @@
     left: 0;
     z-index: 1030;
 }
-html,
-body {
+html, body {
     height: 100%;
 }
-
 #layoutAuthentication {
     display: flex;
     flex-direction: column;
@@ -69,7 +73,6 @@ body {
         margin-left: 0;
         transition: margin 0.15s ease-in-out;
     }
-
     .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
         transform: translateX(-225px);
     }
@@ -116,8 +119,7 @@ body {
     max-width: 20rem;
 }
 
-.nav .nav-link .sb-nav-link-icon,
-.sb-sidenav-menu .nav-link .sb-nav-link-icon {
+.nav .nav-link .sb-nav-link-icon, .sb-sidenav-menu .nav-link .sb-nav-link-icon {
     margin-right: 0.5rem;
 }
 

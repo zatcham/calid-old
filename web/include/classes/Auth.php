@@ -2,10 +2,11 @@
 
 class Auth {
 
+    // Checks whether a user is an admin
     public static function isUserAdmin($userid) {
         $dbconn = Database::Connect();
         $sqlq = "SELECT `UserRole` FROM users WHERE `id`=?;";
-        $stmt = $dbconn->prepare($sqlq);
+        $stmt = $dbconn->prepare($sqlq); // TODO: error handling?
         $stmt->bind_param("s", $userid);
         $stmt->execute();
         $stmt -> store_result();
@@ -18,6 +19,7 @@ class Auth {
         }
     }
 
+    // Adds a login attempt to the database
     public static function addLoginAttempt($userid, $ip, $attempt_type) {
         $dbconn = Database::Connect();
         $sqlq = "INSERT INTO access_attempts (`user_id`, `ip_address`, `attempt_type`) VALUES (?, ?, ?)";
