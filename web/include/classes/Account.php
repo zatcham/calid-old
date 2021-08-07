@@ -250,16 +250,30 @@ class Account {
         }
     }
 
-    // generate key for sign up
-    protected static function generateAPIKey($id) {
+    // generate key for sign up and adds to db
+    public static function generateKey($id) {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $len = strlen($chars);
+        $len = 12; // length of key output
         $x = '';
         for ($i = 0; $i < $len; $i++) {
             $x .= $chars[rand(0, $len - 1)];
         }
-        $x .= $id;
-        return $x;
+        $x .= ("-" . $id); // suffixes user id
+
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO access_keys (`Key`, `Generated_By`) VALUES (?, ?);";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $x, $id);
+        $stmt->execute();
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $x;
+        }
     }
 
     // Create new user - used on new user screen
