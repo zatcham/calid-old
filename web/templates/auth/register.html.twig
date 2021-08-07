@@ -8,7 +8,14 @@
         <h2>Register</h2>
         <p>Please register using this form for access to Calid</p>
 
-        <form style="form-signin" action="" method="post">
+        {% if form_error is not empty %}
+            <div class="alert alert-danger">{{ form_error }}</div>
+        {% endif %}
+        {% if form_success is not empty %}
+            <div class="alert alert-success">'{{ form_success }}'</div>
+        {% endif %}
+
+        <form class="form-signin" action="" method="post">
             <div class="form-group mb-2">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" class="form-control ml-1" placeholder="Username" required autofocus>
@@ -25,18 +32,18 @@
                 <span class="invalid-feedback"></span>
             </div>
             <div class="form-group mb-2">
-                <label for="confirm_password">Confirm password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-control ml-1" placeholder="Confirm password" required>
+                <label for="confirm-password">Confirm password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="form-control ml-1" placeholder="Confirm password" required>
                 <span class="invalid-feedback"></span>
             </div>
             <div class="form-group mb-2">
-                <label for="access_code">Access code:</label>
-                <input type="text" id="access_code" name="access_code" class="form-control ml-1" placeholder="A12CD3" required>
+                <label for="access-code">Access code:</label>
+                <input type="text" id="access-code" name="access-code" class="form-control ml-1" placeholder="A12CD3" required>
                 <span class="invalid-feedback"></span>
             </div>
             <div class="form-group mb-2">
-                <label for="tc_check">Do you accept the T&Cs?</label>
-                <input type="checkbox" id="tc_check" name="tc_check" class="form-check-inline ml-2" required>
+                <label for="tc-check">Do you accept the T&Cs?</label>
+                <input type="checkbox" id="tc-check" name="tc-check" class="form-check-inline ml-2" required>
             </div>
 
 
