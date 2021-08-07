@@ -25,24 +25,17 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
-$pw_change_date = Account::getLastPWChangeDate($userid);
+$pw_change_date = Account::getLastPWChangeDate($userid); // runs functions to get data to dusplay
 $create_date = Account::getDateCreated($userid);
 $user_email = Account::getEmailAddress($userid);
 $form_error = $form_success = "";
-
-//if (Auth::isUserAdmin($userid)) {
-//    $user_role = "Administrator";
-//} else {
-//    $user_role = "Standard User";
-//}
-
-$user_role = Account::getUserRoleName(Account::getUserRole($userid));
+$user_role = Account::getUserRoleName(Account::getUserRole($userid)); // replaced old method, now is dynamic from db
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) {
         if ($_POST['inp-email'] != $user_email) { // if input is not equal to current, then change
             if (Account::checkPassword($userid, $_POST['inp-cpassword'])) { // is password valid
-                if (Account::changeEmail($userid, $_POST['inp-email'])) {
+                if (Account::changeEmail($userid, $_POST['inp-email'])) { // run change email funct
                     $form_success = "Account updated successfully! Please refresh this page for the changes to appear.";
                 } else {
                     $form_error = "An unexpected error has occured. Please try again.";

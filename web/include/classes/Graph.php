@@ -1,10 +1,10 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 require ($document_root . "/newdir/include/variables.php");
-//require("Database.php"); // We assume this is already added
 
 class Graph {
 
+    // the avg is used on the dashboard
     // function to get the average temperature across all sensors for a specific user over the past 24 hours
     public static function getAvgTempGraph($userid): string
     {
@@ -13,13 +13,13 @@ class Graph {
         // no nned for hum reading
         $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(AVG(`Temperature`)) FROM sensor_data INNER JOIN `sensor_details` ON `sensor_data`.SensorID=`sensor_details`.SensorID WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `sensor_details`.`UserID`=? && `sensor_details`.`show_on_avg`=1 GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
         $stmt = $dbconn->prepare($sqlq);
-        $stmt->bind_param("s", $userid);
+        $stmt->bind_param("s", $userid); // TODO: error handling
         $stmt->execute();
         $result = $stmt->get_result();
         $sensor_data = $result->fetch_all(MYSQLI_ASSOC);
         if ($sensor_data) {
-            $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(AVG(`Temperature`))')), JSON_NUMERIC_CHECK);
-            $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK);
+            $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(AVG(`Temperature`))')), JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
+            $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK); // we read the normal date time as it is easier to sort vs the hourly
             $i += 1; // we only proceed with output if this = 1
         } else {
             echo ("No results");
@@ -27,7 +27,7 @@ class Graph {
 
         $temp = $temp ?? '';
         $dt = $dt ?? '';
-        if ($i == 1) {
+        if ($i == 1) { // Heredoc used to contain the js code
             $jsout = <<<JSOUT
     var temp = $temp
     var dtt = $dt
@@ -67,7 +67,7 @@ JSOUT;
         }
     }
 
-    // function to get the average temperature across all sensors for a specific user over the past 24 hours
+    // function to get the average humidity across all sensors for a specific user over the past 24 hours, same as temp but humidity instead
     public static function getAvgHumGraph($userid): string
     {
         $dbconn = Database::Connect();
@@ -130,11 +130,10 @@ JSOUT;
         }
     }
 
-    // Get hum graph for 1 sensor
+    // Get hum graph for 1 sensor , TODO: build this
     public static function getHGraphForOneSensor($sensorid, $timeframe): string {
         $dbconn = Database::Connect();
         $i = "0";
-        // no nned for hum reading
         $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(AVG(`Humidity`)) FROM sensor_data WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `SensorID`=? GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("s", $sensorid);
@@ -188,16 +187,15 @@ JSOUT;
 JSOUT;
             return ($jsout . "");
         } else {
-            return ("There is either no humidity data available for the past 24 hours, or an error has occurred.");
+            return False;
         }
     }
 
-    // Get temp graph for 1 sensor
+    // Get temp graph for 1 sensor, same as abvoe
     public static function getTGraphForOneSensor($sensorid, $timeframe): string
     {
         $dbconn = Database::Connect();
         $i = "0";
-        // no nned for hum reading
         $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(AVG(`Temperature`)) FROM sensor_data WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `SensorID`=? GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("s", $sensorid);

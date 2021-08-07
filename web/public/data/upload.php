@@ -1,4 +1,5 @@
 <?php
+// TODO : this
 include("include/variables.php");
 include("include/db_connect.php");
 

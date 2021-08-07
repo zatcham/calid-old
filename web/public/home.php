@@ -34,11 +34,11 @@ try {
             'page_subtitle' => '',
             'user_isadmin' => Auth::isUserAdmin($userid),
             'current_user' => $username,
-            'sensors_assigned' => Sensor::getAssignedSensorCount($userid),
+            'sensors_assigned' => Sensor::getAssignedSensorCount($userid), // gets metrics
             'sensors_online' => Sensor::getOnlineSensorCount($userid),
             'sensors_offline' => Sensor::getOfflineSensorCount($userid),
             'sensors_alerts' => Sensor::getAlertedSensorCount($userid),
-            'hum_graph' => Graph::getAvgHumGraph($userid),
+            'hum_graph' => Graph::getAvgHumGraph($userid), // gets average graphs
             'temp_graph' => Graph::getAvgTempGraph($userid),
         ]);
 } catch (\Twig\Error\LoaderError $e) {
@@ -46,7 +46,7 @@ try {
 } catch (\Twig\Error\RuntimeError $e) {
     echo ("Error loading page : Twig runtime error");
 } catch (\Twig\Error\SyntaxError $e) {
-    echo ("Error loading page : Twig syntax error . $e");
+    echo ("Error loading page : Twig syntax error");
 }
 
 ?>

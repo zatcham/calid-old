@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../public/assets/favicons/favicon.ico">
-    <meta http-equiv="refresh" content="900;url=logout.php"/> <!-- Auto logout -->
+    <link rel="icon" href="{{ file_path }}/assets/favicons/favicon.ico">
+    <meta http-equiv="refresh" content="900;url={{ file_path }}/auth/logout.php"/> <!-- Auto logout -->
 
     <title>{% block title %}{% endblock %} - {{ server_name }} - Calid</title>
 
@@ -67,6 +67,18 @@
                             List sensors
                         </a>
                     </div>
+                    {# Comented out whilst module is built #}
+{#                    <div class="sb-sidenav-menu-heading">Alerts</div>#}
+{#                    <div>#}
+{#                        <a class="nav-link" href="{{ file_path }}/alerts/show_alerts.php">#}
+{#                            <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div>#}
+{#                            Show alerts#}
+{#                        </a>#}
+{#                        <a class="nav-link" href="{{ file_path }}/alerts/edit_alerts.php">#}
+{#                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>#}
+{#                            Edit alerts#}
+{#                        </a>#}
+{#                    </div>#}
                     <div class="sb-sidenav-menu-heading">Data</div>
                     <div>
                         <a class="nav-link" href="{{ file_path }}/visualise/graph.php">
@@ -124,10 +136,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
-<!--<script src="js/scripts.js"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
-<!--<script src="js/datatables-simple-demo.js"></script>-->
-{#<script src="https://unpkg.com/react/umd/react.production.min.js" crossorigin></script>#}
+<script src="{{ file_path }}/js/scripts.js"></script>
 {% block footer %}
 {% endblock %}
 

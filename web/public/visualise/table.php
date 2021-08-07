@@ -60,8 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-
-
 // render page from template
 try {
     echo $twig->render('visualise_table.html.twig',
