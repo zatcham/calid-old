@@ -250,6 +250,37 @@ class Account {
         }
     }
 
+    // generate key for sign up
+    protected static function generateAPIKey($id) {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $len = strlen($chars);
+        $x = '';
+        for ($i = 0; $i < $len; $i++) {
+            $x .= $chars[rand(0, $len - 1)];
+        }
+        $x .= $id;
+        return $x;
+    }
 
+    // Create new user - used on new user screen
+    public static function createNewUser($username, $email, $password, $role) {
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO users (`username`, `password`, `email`, `UserRole`) VALUES (?, ?, ?, ?)";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->bind_param("ssss", $username, $hashed_password, $email, $role);
+        $stmt->execute();
+        // now get the ID of the user
+        $user_id = $dbconn->insert_id;
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $user_id;
+        }
+    }
 
 }
