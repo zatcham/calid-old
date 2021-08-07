@@ -27,6 +27,48 @@ class Auth {
         $stmt->bind_param("sss", $userid, $ip, $attempt_type);
         $stmt->execute();
         $stmt->close();
-
     }
+
+    // Following functions are used for sign up
+    // Checks whether an access code exists in the database
+    public static function checkAccessKey($key) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT COUNT(`ID`) FROM access_keys WHERE `Key`=? and `Used`=0;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($x);
+        $stmt->fetch();
+        if ($x == 1) {
+            return True;
+        } else {
+            return False;
+        }
+    }
+
+    // Marks a access key as used
+    public static function useAccessKey($key) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `access_keys` SET `Used`=1 WHERE `Key`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+
 }

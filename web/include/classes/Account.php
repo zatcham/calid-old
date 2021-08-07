@@ -276,7 +276,7 @@ class Account {
         }
     }
 
-    // Create new user - used on new user screen
+    // Create new user - used on new user screen and sign up
     public static function createNewUser($username, $email, $password, $role) {
         $dbconn = Database::Connect();
         $sqlq = "INSERT INTO users (`username`, `password`, `email`, `UserRole`) VALUES (?, ?, ?, ?)";
