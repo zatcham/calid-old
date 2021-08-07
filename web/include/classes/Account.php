@@ -188,4 +188,113 @@ class Account {
         }
     }
 
+    // used for edit user
+    // gets a username from userid
+    public static function getUsername($userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `username` FROM users WHERE id = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($name);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $name;
+        }
+    }
+
+    // does user id exist
+    public static function doesUserExist($userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT COUNT(`id`) FROM users WHERE id = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            if ($count == 1) {
+                return True;
+            } else {
+                return False;
+            }
+        }
+    }
+
+    // changes user role
+    public static function changeUserRole($userid, $newrole) { // role is in id form
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `users` SET `UserRole`=? WHERE `id`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $newrole, $userid);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    // generate key for sign up and adds to db
+    public static function generateKey($id) {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $len = 12; // length of key output
+        $x = '';
+        for ($i = 0; $i < $len; $i++) {
+            $x .= $chars[rand(0, $len - 1)];
+        }
+        $x .= ("-" . $id); // suffixes user id
+
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO access_keys (`Key`, `Generated_By`) VALUES (?, ?);";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $x, $id);
+        $stmt->execute();
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $x;
+        }
+    }
+
+    // Create new user - used on new user screen
+    public static function createNewUser($username, $email, $password, $role) {
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO users (`username`, `password`, `email`, `UserRole`) VALUES (?, ?, ?, ?)";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->bind_param("ssss", $username, $hashed_password, $email, $role);
+        $stmt->execute();
+        // now get the ID of the user
+        $user_id = $dbconn->insert_id;
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $user_id;
+        }
+    }
+
 }

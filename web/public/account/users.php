@@ -31,7 +31,7 @@ $errors = "";
 
 // get data
 $dbconn = Database::Connect();
-$sqlq = "SELECT `username`, `email`, `UserRole`, `created_at`, `LastPWChange` FROM users";
+$sqlq = "SELECT `id`, `username`, `email`, `UserRole`, `created_at`, `LastPWChange` FROM users";
 $stmt = $dbconn->prepare($sqlq);
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";

@@ -11,14 +11,18 @@
     {% endif %}
     {% if no_sensor %}
         {% if from_page is empty %}
-            <a href="list_sensors.php" class="btn btn-block btn-primary">Go back</a>
+            <a href="list_sensors.php" class="btn btn-block btn-primary"><i class="fas fa-arrow-left"></i> Go back</a>
         {% else %}
-            <a href="{{ from_page }}.php" class="btn btn-block btn-primary">Go back</a>
+            <a href="{{ from_page }}.php" class="btn btn-block btn-primary"><i class="fas fa-arrow-left"></i> Go back</a>
         {% endif %}
     {% endif %}
     {% if no_data %}
         Error: There was an error whilst attempting to retrieve data for the selected sensor. Please return to the sensor list and try again.
-        <a href="{{ from_page }}.php" class="btn btn-block btn-primary">Go back</a>
+        {% if from_page is empty %}
+            <a href="list_sensors.php" class="btn btn-block btn-primary"><i class="fas fa-arrow-left"></i> Go back</a>
+        {% else %}
+            <a href="{{ from_page }}.php" class="btn btn-block btn-primary"><i class="fas fa-arrow-left"></i> Go back</a>
+        {% endif %}
     {% endif %}
     {% if form_success is not empty %}
         <div class="alert alert-success">{{ form_success }}
