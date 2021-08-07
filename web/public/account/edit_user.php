@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         }
                     }
                 } else {
-                    $errors = "Error: you must confirm the new password";
+                    $errors = "Error: please check that both passwords entered match.";
                 }
             }
             if ($count > 0) {
