@@ -29,14 +29,21 @@
             {% for sub_array in table_data %}
                 <tr>
                     {% for key, value in sub_array %}
-                        <td>{{ value }}</td>
+                        {% if key == "id" %}
+                        {% else %}
+                            <td>{{ value }}</td>
+                        {% endif %}
                     {% endfor %}
-                    <td><a href="edit_user.php?user={{ sub_array.username }}" class="btn btn-secondary btn-block"><i class="fas fa-user-edit"></i> Edit User</a></td>
+                    <td><a href="edit_user.php?user={{ sub_array.id }}" class="btn btn-secondary btn-block"><i class="fas fa-user-edit"></i> Edit User</a></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     {% endif %}
+    <hr />
+    <div class="float-right">
+        <a href="new_user.php" class="btn btn-success"><i class="fas fa-user-plus"></i> Add new user</a>
+    </div>
 {% endblock %}
 
 {% block footer %}
@@ -45,5 +52,4 @@
             $('#usersTable').DataTable();
         } );
     </script>
-
 {% endblock %}

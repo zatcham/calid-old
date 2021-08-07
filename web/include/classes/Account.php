@@ -188,4 +188,68 @@ class Account {
         }
     }
 
+    // used for edit user
+    // gets a username from userid
+    public static function getUsername($userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT `username` FROM users WHERE id = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($name);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            return $name;
+        }
+    }
+
+    // does user id exist
+    public static function doesUserExist($userid) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT COUNT(`id`) FROM users WHERE id = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            if ($count == 1) {
+                return True;
+            } else {
+                return False;
+            }
+        }
+    }
+
+    // changes user role
+    public static function changeUserRole($userid, $newrole) { // role is in id form
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `users` SET `UserRole`=? WHERE `id`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $newrole, $userid);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+
+
 }
