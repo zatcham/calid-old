@@ -455,7 +455,7 @@ class Sensor {
         $len = strlen($chars);
         $x = '';
         for ($i = 0; $i < $len; $i++) {
-            $x .= $chars[rand(0, $len - 1)];
+            $x .= $chars[mt_rand(0, $len - 1)];
         }
         $x .= $id;
         return $x;

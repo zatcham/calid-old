@@ -253,10 +253,10 @@ class Account {
     // generate key for sign up and adds to db
     public static function generateKey($id) {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $len = 12; // length of key output
+        $len = 6; // length of key output
         $x = '';
         for ($i = 0; $i < $len; $i++) {
-            $x .= $chars[rand(0, $len - 1)];
+            $x .= $chars[mt_rand(0, strlen($chars)- 1)];
         }
         $x .= ("-" . $id); // suffixes user id
 
