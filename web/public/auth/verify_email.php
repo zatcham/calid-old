@@ -1,5 +1,4 @@
 <?php
-// TODO: this page
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 
 require $document_root . '\newdir\vendor\autoload.php';

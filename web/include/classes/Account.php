@@ -414,4 +414,110 @@ class Account {
         }
     }
 
+    // passwrod reset functions
+    // main forgot password funct
+    public static function forgotPassword($username) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `id`, `email` FROM users WHERE `username`=? LIMIT 1;"; // get user id from db
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($id, $email);
+        $stmt->fetch();
+        // once user id got, generate key
+        if ($key = self::generateResetKey($id)) {
+            // once key generated, send eamil
+            if (Email::sendResetEmail($email, $id, $username, $key)) {
+                $sql = "UPDATE `password_resets` SET `EmailSent`=1 WHERE `Key`=?;";
+                $stmt = $dbconn->prepare($sql);
+                if ($stmt == False) {
+                    return False;
+                }
+                $stmt->bind_param("s", $key);
+                $stmt->execute();
+                if ($stmt == False) {
+                    return False;
+                } else {
+                    return True;
+                }
+            } else {
+                return False;
+            }
+        } else {
+            return False;
+        }
+    }
+
+    // generates reset code for url
+    public static function generateResetKey($id) {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $len = 24; // length of key output
+        $x = '';
+        for ($i = 0; $i < $len; $i++) {
+            $x .= $chars[mt_rand(0, strlen($chars)- 1)];
+        }
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO password_resets (`UserID`, `Key`) VALUES (?, ?);";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $id, $x);
+        $stmt->execute();
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $x;
+        }
+    }
+
+    // Marks reset email as sent
+    public static function resetEmailSent($key) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `password_resets` SET `EmailSent`=1 WHERE `Key`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    // checks if username exists
+    public static function doesUsernameExist($usernane) {
+        $dbconn = Database::Connect();
+        $sql = "SELECT COUNT(`id`) FROM users WHERE username = ?";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return "Error";
+        }
+        $stmt->bind_param("s", $usernane);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "Error";
+        } else {
+            if ($count == 1) {
+                return True;
+            } else {
+                return False;
+            }
+        }
+    }
+
 }
