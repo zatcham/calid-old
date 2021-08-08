@@ -1,0 +1,18 @@
+{% extends "auth/base.html.twig" %}
+
+{% block title %}Email Verification{% endblock %}
+
+{% block content %}
+    <div class="wrapper border rounded px-5" style="background-color: #f5f5f5;">
+        <img src="../assets/calid_logo_small.png" alt="Calid Logo">
+        <h2>Email Verification</h2>
+
+        {% if success is not empty %}
+            <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+        {% if error is not empty %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <a href="login.php" class="btn btn-success btn-block m-3">Go to login</a> {# TODO: wording #}
+    </div>
+{% endblock %}

@@ -365,4 +365,53 @@ class Account {
         }
     }
 
+    // Checks verfiication code
+    public static function checkVerificationCode($key) {
+        $dbconn = Database::Connect();
+//        $sqlq = "SELECT COUNT(`ID`) FROM sign_up_verification WHERE `Key`=? and `Used`=0 and `Timestamp` > DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
+        $sqlq = "SELECT COUNT(`ID`) FROM sign_up_verification WHERE `Key`=? and `Used`=0 LIMIT 1;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($x);
+        $stmt->fetch();
+        if ($x == 1) {
+            return True;
+        } else {
+            return False;
+        }
+    }
+
+    // sets users verified status
+    public static function verifyUser($key) { // uses key to auth due to link structure
+        $dbconn = Database::Connect();
+        // get the users id, key must not be used
+        $sqlq = "SELECT `UserID` FROM sign_up_verification WHERE `Key`=? and `Used`=0 LIMIT 1;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($id);
+        $stmt->fetch();
+        // update users db with user role
+        if (self::changeUserRole($id, "1")) { // all new users are set to std once verified
+            return True;
+        } else {
+            return False;
+        }
+    }
+
 }
