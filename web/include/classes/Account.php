@@ -297,4 +297,72 @@ class Account {
         }
     }
 
+    // Generates sign up verify code
+    public static function generateVerificationCode($id) {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $len = 24; // length of key output
+        $x = '';
+        for ($i = 0; $i < $len; $i++) {
+            $x .= $chars[mt_rand(0, strlen($chars)- 1)];
+        }
+        $dbconn = Database::Connect();
+        $sqlq = "INSERT INTO sign_up_verification (`UserID`, `Key`) VALUES (?, ?);";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("ss", $id, $x);
+        $stmt->execute();
+        $stmt->close();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return $x;
+        }
+    }
+
+    // Marks a verification code as used
+    public static function useVerificationCode($key) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sign_up_verification` SET `Used`=1 WHERE `Key`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    // Marks verification email as sent
+    public static function verifyEmailSent($key) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `sign_up_verification` SET `EmailSent`=1 WHERE `Key`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    // generates key then sends email
+    public static function sendVerifyEmail($id, $email, $username) {
+        if ($key = self::generateVerificationCode($id)) {
+            Email::sendVerificationEmail($email, $id, $username, $key);
+            return True;
+        } else {
+            return False;
+        }
+    }
+
 }

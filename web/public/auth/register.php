@@ -6,6 +6,7 @@ require $document_root . '\newdir\vendor\autoload.php';
 require $document_root . '\newdir\include\classes\Database.php';
 require $document_root . '\newdir\include\classes\Account.php';
 require $document_root . '\newdir\include\classes\Auth.php';
+require $document_root . '\newdir\include\classes\Email.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -48,13 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($form_error)) { // empty means no errors, proceed
             if (Auth::checkAccessKey($_POST['access-code'])) {
                 // access code is ok, proceed
-                if (Account::createNewUser($_POST['username'], $_POST['email'], $_POST['password'], "3")) {
+                if ($x = Account::createNewUser($_POST['username'], $_POST['email'], $_POST['password'], "3")) {
                     // account creation sucesfful, set access key to used
                     if (Auth::useAccessKey($_POST['access-code'])) {
                         // sucess
-                        // TODO : Sign up email
-                        $form_success = "Account created successfully. Redirecting you to the login screen...";
-                        header("refresh:3 url=login.php");
+                        if (Account::sendVerifyEmail($x, $_POST['email'], $_POST['username'])) {
+                            $form_success = "Account created successfully. Redirecting you to the login screen...";
+                            header("refresh:3 url=login.php");
+                        } else {
+                            $form_error = "An unexpected error occured when sending the verification email.";
+                            // TODO : logging
+                        }
                     } else {
                         $form_error = "An unexpected error occured.";
                     }
