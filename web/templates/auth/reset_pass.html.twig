@@ -7,7 +7,13 @@
         <img src="../assets/calid_logo_small.png" alt="Calid Logo">
         <h2>Reset Password</h2>
         <p>Please fill out the boxes below to reset your password</p>
-
+        {% if success is not empty %}
+            <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+        {% if error is not empty %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% if no_get is empty %}
         <form action="" method="post">
             <div class="form-group mb-2">
                 <label for="password">Password:</label>
@@ -27,4 +33,5 @@
             </div>
         </form>
     </div>
+    {% endif %}
 {% endblock %}

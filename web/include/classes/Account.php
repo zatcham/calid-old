@@ -520,4 +520,44 @@ class Account {
         }
     }
 
+    // checks key exists and is ok
+    public static function checkResetKey($key) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT COUNT(`ID`), `UserID` FROM password_resets WHERE `Key`=? and `Used`=0 LIMIT 1;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($x, $id);
+        $stmt->fetch();
+        if ($x == 1) {
+            return $id;
+        } else {
+            return False;
+        }
+    }
+
+    // marks reset key as used
+    public static function useResetKey($key) {
+        $dbconn = Database::Connect();
+        $sql = "UPDATE `password_resets` SET `Used`=1 WHERE `Key`=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $key);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
 }
