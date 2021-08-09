@@ -53,10 +53,17 @@ class Email  {
             $file_out = fread($myfile, filesize($template_path));
             fclose($myfile);
             return ($file_out);
+        } elseif ($email_type == "reset-pass") {
+            $template_path .= '\reset-pass.html';
+            $myfile = fopen($template_path, "r") or die("Unable to open file!");
+            $file_out = fread($myfile, filesize($template_path));
+            fclose($myfile);
+            return ($file_out);
         }
         return False;
     }
 
+    // sends verification emails
     public static function sendVerificationEmail($to_address, $userid, $username, $verify_key) {
         global $directory_path;
         $template = self::readTemplates("verify-account");
@@ -76,9 +83,29 @@ class Email  {
         if (self::sendEmail($template, "Verify your email address", $to_address)) {
             Account::verifyEmailSent($verify_key);
         }
-
-
     }
 
+    // sends password reset emails
+    public static function sendResetEmail($to_address, $userid, $username, $reset_key) {
+        global $directory_path;
+        $template = self::readTemplates("reset-pass");
+        $variables = array();
+        $variables['username'] = $username;
+        $path = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+        $path .= $directory_path;
+        $image_path = $path;
+        $path .= "/auth/reset_pass.php?key=$reset_key";
+        $variables['url'] = $path;
+        $image_path .= "/assets/email/calid_logo_text.png"; // changed to imgur temporarily
+        $variables['image_url'] = $image_path;
+        foreach($variables as $key => $value) {
+            $template = str_replace('{{ '.$key.' }}', $value, $template);
+        }
+        if (self::sendEmail($template, "Reset your password", $to_address)) {
+            return True;
+        } else {
+            return False;
+        }
+    }
 
 }

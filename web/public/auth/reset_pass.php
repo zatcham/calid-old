@@ -4,7 +4,7 @@ $document_root = $_SERVER['DOCUMENT_ROOT'];
 
 require $document_root . '\newdir\vendor\autoload.php';
 require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
+require $document_root . '\newdir\include\classes\Account.php';
 require $document_root . '\newdir\include\classes\Auth.php';
 
 use Twig\Environment;
@@ -15,15 +15,69 @@ session_start();
 // twig init
 $loader = new FilesystemLoader('../../templates');
 $twig = new Environment($loader);
-//$twig->addGlobal('session', $_SESSION);
+$errors = $success = $no_get = "";
 
-// varaibles used for functs
+if (!$_GET) {
+    $errors = "Error: Invalid request.";
+    $no_get = True;
+} else {
+    if (!empty($_GET['key'])) {
+        // now check if form submitted, cant submit w.out key
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!empty($_POST)) {
+                // validation
+                if (empty(trim($_POST['password']))) {
+                    $errors = "You must enter a new password.";
+                } else {
+                    $password = trim($_POST['password']);
+                }
+                if (empty(trim($_POST['confirm_password']))) {
+                    $errors = "You must confirm the new password.";
+                } else {
+                    $confirm_password = trim($_POST['confirm_password']);
+                }
+                if ($password != $confirm_password) {
+                    $errors = "Both passwords must match";
+                }
+                if (strlen($password) <= 7) {
+                    $errors = "The password must be at least 8 characters in length";
+                }
+                if (empty($errors)) { // no errors, continue
+                    // check key
+                    if ($x = Account::checkResetKey($_GET['key'])) {
+                        // key is ok, now reset
+                        if ($x != False) {
+                            if (Account::resetPassword($x, $password)) {
+                                Account::useResetKey($_GET['key']);
+                                $success = "Password reset successfully! Redirecting you to the login page...";
+                                header("refresh:3 url=login.php");
+                            } else {
+                                $errors = "An unexpected error occured whilst attempting to reset the password";
+                            }
+                        }
+                    } else {
+                        $errors = "Error: the reset key specified is invalid.";
+                    }
+                }
+            } else {
+                $errors = "Error: Invalid POST request.";
+            }
+        }
+    } else {
+        $errors = "Error: Invalid GET request.";
+        $no_get = True;
+    }
+}
+
 
 // render page from template
 try {
     echo $twig->render('auth/reset_pass.html.twig',
         ['server_name' => $server_name,
             'page_title' => 'Reset Password',
+            'error' => $errors,
+            'success' => $success,
+            'no_get' => $no_get,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");
