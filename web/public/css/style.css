@@ -244,15 +244,20 @@ html, body {
 }
 
 .navmob {
-    display: block; /* This is how it looks on mobile */
+    display: block;
 }
 
 @media (min-width: 600px) {
     .navmob {
-        display: none; /* This is how it looks on desktop */
+        display: none;
     }
 }
 
 .bg-orange {
     background-color: coral;
+}
+@media (min-width: 991px) {
+    .hide-on-pc {
+        display: none;
+    }
 }
