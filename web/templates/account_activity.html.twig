@@ -38,7 +38,9 @@
 {% block footer %}
     <script>
         $(document).ready( function () {
-            $('#activityTable').DataTable();
+            $('#activityTable').DataTable({
+                "order": [[ 0, "desc" ]]
+            });
         } );
     </script>
 {% endblock %}
