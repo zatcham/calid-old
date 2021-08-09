@@ -13,7 +13,7 @@ use Twig\Loader\FilesystemLoader;
 // check session exists
 session_start();
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: auth/login.php");
+    header("location: ../error/403.html");
     exit;
 }
 

@@ -12,10 +12,10 @@ use Twig\Loader\FilesystemLoader;
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: ../error/403.html");
+    exit;
+}
 
 // twig init
 $loader = new FilesystemLoader('../../templates');

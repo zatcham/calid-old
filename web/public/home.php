@@ -6,15 +6,16 @@ require $document_root . '\newdir\include\classes\Sensor.php';
 require $document_root . '\newdir\include\classes\Auth.php';
 require $document_root . '\newdir\include\classes\Graph.php';
 
+
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: error/403.html");
+    exit;
+}
 
 // twig init
 $loader = new FilesystemLoader('../templates');
@@ -25,6 +26,7 @@ $twig->addGlobal('file_path', $directory_path);
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
+$twig->addGlobal('nav_colour', Auth::getNavDarkMode($userid));
 
 // render page from template
 try {
