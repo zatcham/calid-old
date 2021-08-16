@@ -20,11 +20,11 @@ class Auth {
     }
 
     // Adds a login attempt to the database
-    public static function addLoginAttempt($userid, $ip, $attempt_type) {
+    public static function addLoginAttempt($userid, $ip, $attempt_type, $user_agent) {
         $dbconn = Database::Connect();
-        $sqlq = "INSERT INTO access_attempts (`user_id`, `ip_address`, `attempt_type`) VALUES (?, ?, ?)";
+        $sqlq = "INSERT INTO access_attempts (`user_id`, `ip_address`, `attempt_type`, `user_agent`) VALUES (?, ?, ?, ?)";
         $stmt = $dbconn->prepare($sqlq);
-        $stmt->bind_param("sss", $userid, $ip, $attempt_type);
+        $stmt->bind_param("ssss", $userid, $ip, $attempt_type, $user_agent);
         $stmt->execute();
         $stmt->close();
     }
@@ -68,6 +68,37 @@ class Auth {
         } else {
             return True;
         }
+    }
+
+    // UI Settings retrieval - in auth because each page needs it
+    // Gets nav dark mode setting
+    public static function getNavDarkMode($userid) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `LightModeNav` FROM ui_settings WHERE `UserID`=?;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return "dark";
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($val);
+        $stmt->fetch();
+        if ($stmt == False) {
+            return "dark";
+        } else {
+            if ($val == 1) {
+                return "light";
+            } else {
+                return "dark";
+            }
+        }
+        return "dark"; // always return dark
+    }
+
+    // Twig global variables
+    public static function getTwigGlobals($userid) {
+        $twig->addGlobal('nav_colour', Auth::getNavDarkMode($userid));
     }
 
 

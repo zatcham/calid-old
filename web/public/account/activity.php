@@ -22,14 +22,18 @@ $twig = new Environment($loader);
 $twig->addGlobal('session', $_SESSION); // main varaibles used
 $twig->addGlobal('file_path', $directory_path);
 
+// Add cookie for redirect
+//setcookie("last_page", "account/activity", time() + 3600,  "/");
+
 // varaibles used for functs
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
 $errors = "";
 
 // get data
+// activity solely logs logins, maybe we should track every page
 $dbconn = Database::Connect();
-$sqlq = "SELECT `date_time`, `ip_address`, `attempt_type` FROM access_attempts WHERE `user_id`=? ORDER BY `date_time` DESC LIMIT 100;"; // only allows last 100 to be got from db
+$sqlq = "SELECT `date_time`, `ip_address`, `user_agent`, `attempt_type`  FROM access_attempts WHERE `user_id`=? ORDER BY `date_time` DESC LIMIT 100;"; // only allows last 100 to be got from db
 $stmt = $dbconn->prepare($sqlq);
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
