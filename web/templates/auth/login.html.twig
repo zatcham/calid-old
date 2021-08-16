@@ -13,7 +13,7 @@
         <div class="alert alert-danger">{{ login_error }}</div>
     {% endif %}
     {% if login_success is not empty %}
-        <div class="alert alert-success">'{{ login_success }}'</div>
+        <div class="alert alert-success">{{ login_success }}</div>
     {% endif %}
 
     <form class="form-signin" action="" method="post">
@@ -44,4 +44,10 @@
         </div>
     </form>
 </div>
+<script>
+    // remove msg variable from url
+    history.replaceState && history.replaceState(
+        null, '', location.pathname + location.search.replace(/[\?&]msg=[^&]+/, '').replace(/^&/, '?')
+    );
+</script>
 {% endblock %}
