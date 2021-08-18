@@ -11,18 +11,18 @@ class Graph {
         $dbconn = Database::Connect();
         $i = "0";
         // no nned for hum reading
-        $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(AVG(`Temperature`)) FROM sensor_data INNER JOIN `sensor_details` ON `sensor_data`.SensorID=`sensor_details`.SensorID WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `sensor_details`.`UserID`=? && `sensor_details`.`show_on_avg`=1 GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
+        $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(`Temperature`) FROM sensor_data INNER JOIN `sensor_details` ON `sensor_data`.SensorID=`sensor_details`.SensorID WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `sensor_details`.`UserID`=? && `sensor_details`.`show_on_avg`=1 GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("s", $userid); // TODO: error handling
         $stmt->execute();
         $result = $stmt->get_result();
         $sensor_data = $result->fetch_all(MYSQLI_ASSOC);
         if ($sensor_data) {
-            $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(AVG(`Temperature`))')), JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
+            $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(`Temperature`)')), JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
             $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK); // we read the normal date time as it is easier to sort vs the hourly
             $i += 1; // we only proceed with output if this = 1
         } else {
-            echo ("No results");
+            echo (""); // empty if error
         }
 
         $temp = $temp ?? '';
@@ -73,18 +73,18 @@ JSOUT;
         $dbconn = Database::Connect();
         $i = "0";
         // no nned for hum reading
-        $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(AVG(`Humidity`)) FROM sensor_data INNER JOIN `sensor_details` ON `sensor_data`.SensorID=`sensor_details`.SensorID WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `sensor_details`.`UserID`=? && `sensor_details`.`show_on_avg`=1 GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
+        $sqlq = "SELECT `Date/Time`, HOUR(`Date/Time`) , ROUND(`Humidity`) FROM sensor_data INNER JOIN `sensor_details` ON `sensor_data`.SensorID=`sensor_details`.SensorID WHERE `Date/Time` > DATE_SUB(NOW(), INTERVAL 24 HOUR) && `sensor_details`.`UserID`=? && `sensor_details`.`show_on_avg`=1 GROUP BY HOUR(`Date/Time`) ORDER BY (`Date/Time`) DESC";
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("s", $userid);
         $stmt->execute();
         $result = $stmt->get_result();
         $sensor_data = $result->fetch_all(MYSQLI_ASSOC);
         if ($sensor_data) {
-            $hum = json_encode(array_reverse(array_column($sensor_data, 'ROUND(AVG(`Humidity`))')), JSON_NUMERIC_CHECK);
+            $hum = json_encode(array_reverse(array_column($sensor_data, 'ROUND(`Humidity`)')), JSON_NUMERIC_CHECK);
             $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK);
             $i += 1; // we only proceed with output if this = 1
         } else {
-            echo ("No results");
+            echo ("");
         }
 
         $hum = $hum ?? '';
