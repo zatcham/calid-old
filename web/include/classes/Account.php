@@ -560,4 +560,21 @@ class Account {
         }
     }
 
+    // Delete user
+    public static function deleteUser($user_id) {
+        $dbconn = Database::Connect();
+        $sql = "DELETE FROM users WHERE id=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
 }
