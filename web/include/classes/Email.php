@@ -2,6 +2,7 @@
 
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 require ($document_root . "/newdir/include/variables.php");
+require ("Logging.php");
 
 // we asusme autoload has run to load in phpmailer
 use PHPMailer\PHPMailer\PHPMailer;
@@ -24,15 +25,17 @@ class Email  {
         $mail->Port = $smtp_port;
 
         $mail->From = $email_from_address;
-        $mail->FromName = "Calid";
+        $mail->FromName = "Calid"; // fixed name
 
         $mail->addAddress($to_address);
         $mail->Subject = $subject;
         $mail->isHTML(True);
         $mail->MsgHTML($body);
         if ($mail->send()) {
+            Logging::log('info', "Email sent. Details: To Address $to_address, Subject $subject"); // leave body out
             return True;
         } else {
+            Logging::log('error', "Mail Error occured in Email/sendEmail. Details: $mail->ErrorInfo");
             return False;
         }
     }
@@ -60,6 +63,7 @@ class Email  {
             fclose($myfile);
             return ($file_out);
         }
+        Logging::log('error', "Error occured in Email/readTemplates. No template found (if statements exited)");
         return False;
     }
 
@@ -81,7 +85,11 @@ class Email  {
             $template = str_replace('{{ '.$key.' }}', $value, $template);
         }
         if (self::sendEmail($template, "Verify your email address", $to_address)) {
-            Account::verifyEmailSent($verify_key);
+            Account::verifyEmailSent($verify_key); // if to be here
+            Logging::log('info', "Verification email sent. Details: UserID $userid, Username $username, To Address $to_address");
+        } else {
+            Logging::log('error', "Error occured in Email/sendVerificationEmail. sendEmail returned value other than True");
+            return False;
         }
     }
 
@@ -102,8 +110,10 @@ class Email  {
             $template = str_replace('{{ '.$key.' }}', $value, $template);
         }
         if (self::sendEmail($template, "Reset your password", $to_address)) {
+            Logging::log('info', "Reset email sent. Details: UserID $userid, Username $username, To Address $to_address");
             return True;
         } else {
+            Logging::log('error', "Error occured in Email/sendResetEmail. sendEmail returned value other than True");
             return False;
         }
     }
