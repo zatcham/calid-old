@@ -1,7 +1,6 @@
 <?php
 
 class Account {
-
     // A lot of these functions are used for the account settings page
 
     // used to reset passwords, accepts plane text password and hashes it

@@ -1,10 +1,11 @@
 <?php
 session_start();
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
-require $document_root . '\newdir\include\classes\Auth.php';
+require $document_root . '\vendor\autoload.php';
+//echo ($document_root . '\include\classes\Database.php');
+require $document_root . '\include\classes\Database.php';
+require $document_root . '\include\classes\Sensor.php';
+require $document_root . '\include\classes\Auth.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

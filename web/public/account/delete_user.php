@@ -1,9 +1,9 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Auth.php';
-require $document_root . '\newdir\include\classes\Account.php';
+require $document_root . '\vendor\autoload.php';
+require $document_root . '\include\classes\Database.php';
+require $document_root . '\include\classes\Auth.php';
+require $document_root . '\include\classes\Account.php';
 
 session_start();
 // Check login status

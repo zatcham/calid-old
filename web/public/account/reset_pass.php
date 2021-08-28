@@ -1,11 +1,11 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT']; // TODO : Change to conf file
 
-require $document_root . '\newdir\vendor\autoload.php'; // necesary classes imported
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
-require $document_root . '\newdir\include\classes\Auth.php';
-require $document_root . '\newdir\include\classes\Account.php';
+require $document_root . '\vendor\autoload.php'; // necesary classes imported
+require $document_root . '\include\classes\Database.php';
+require $document_root . '\include\classes\Sensor.php';
+require $document_root . '\include\classes\Auth.php';
+require $document_root . '\include\classes\Account.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

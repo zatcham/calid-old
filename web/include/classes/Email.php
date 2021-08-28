@@ -1,7 +1,7 @@
 <?php
 
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require ($document_root . "/newdir/include/variables.php");
+require ($document_root . "/include/variables.php");
 require ("Logging.php");
 
 // we asusme autoload has run to load in phpmailer
@@ -43,7 +43,7 @@ class Email  {
     // reads the templates from the template files
     public static function readTemplates($email_type) {
         $document_root = $_SERVER['DOCUMENT_ROOT'];
-        $template_path = $document_root . '\newdir\email-templates';
+        $template_path = $document_root . '\email-templates';
         if ($email_type == "alert") {
             $template_path .= '\alert.html';
             $myfile = fopen($template_path, "r") or die("Unable to open file!");

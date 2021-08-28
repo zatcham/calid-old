@@ -1,6 +1,7 @@
 <?php
+
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require ($document_root . "/newdir/include/variables.php");
+require ($document_root . "/include/variables.php");
 
 class Graph {
 
