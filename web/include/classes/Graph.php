@@ -5,6 +5,8 @@ require_once ($document_root . "/include/variables.php");
 require_once ($document_root . "/vendor/autoload.php");
 require_once ($document_root . "/include/classes/Account.php");
 
+use PhpUnitConversion\Unit\Temperature;
+
 class Graph {
 
     // the avg is used on the dashboard
@@ -21,9 +23,24 @@ class Graph {
         $result = $stmt->get_result();
         $sensor_data = $result->fetch_all(MYSQLI_ASSOC);
         if ($sensor_data) {
-            $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(`Temperature`)')), JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
-            $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK); // we read the normal date time as it is easier to sort vs the hourly
-            $i += 1; // we only proceed with output if this = 1
+            if (Account::isUserFahrenheit($userid)) {
+                $temp = array_reverse(array_column($sensor_data, 'ROUND(`Temperature`)'));
+                foreach ($temp as $key => $value) {
+                    $c = new PhpUnitConversion\Unit\Temperature\Celsius($value);
+                    $f = Temperature\Fahrenheit::from($c)->format();
+                    $f = substr($f, 0, 2);
+                    $temp[$key] = $f;
+                }
+                $axis_title = "Temperature (°F)";
+                $temp = json_encode($temp, JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
+                $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK); // we read the normal date time as it is easier to sort vs the hourly
+                $i += 1; // we only proceed with output if this = 1
+            } else {
+                $axis_title = "Temperature (°C)";
+                $temp = json_encode(array_reverse(array_column($sensor_data, 'ROUND(`Temperature`)')), JSON_NUMERIC_CHECK); // Json ecnoded as we are reading back into js
+                $dt = json_encode(array_reverse(array_column($sensor_data, 'Date/Time')), JSON_NUMERIC_CHECK); // we read the normal date time as it is easier to sort vs the hourly
+                $i += 1; // we only proceed with output if this = 1
+            }
         } else {
             echo (""); // empty if error
         }
@@ -34,6 +51,7 @@ class Graph {
             $jsout = <<<JSOUT
     var temp = $temp
     var dtt = $dt
+    var title = '$axis_title'
     var randomColorFactor = function() {
         return Math.round(Math.random() * 255);
     };
@@ -58,7 +76,7 @@ class Graph {
             categories: dtt
         },
         yAxis: {
-            title: { text: 'Temperature (°C)' }
+            title: { text: title }
         },
         credits: { enabled: false }
     });

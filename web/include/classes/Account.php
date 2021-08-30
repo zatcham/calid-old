@@ -576,4 +576,26 @@ class Account {
         }
     }
 
+    public static function isUserFahrenheit($userid) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `TempUnit` FROM ui_settings WHERE `UserID`=? ;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($x);
+        $stmt->fetch();
+        if ($x == "2") {
+            return True;
+        } else {
+            return False;
+        }
+    }
+
 }
