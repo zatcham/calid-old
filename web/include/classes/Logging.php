@@ -1,7 +1,7 @@
 <?php
 
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require $document_root . '\vendor\autoload.php'; // hopefully importing on other pages works too???
+require_once $document_root . '\vendor\autoload.php'; // hopefully importing on other pages works too???
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

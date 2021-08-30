@@ -1,6 +1,6 @@
 <?php
-require ("variables.php");
-require ("classes/Database.php");
+require_once ("variables.php");
+require_once ("classes/Database.php");
 //require ("classes/Logging.php");
 
 // Add any new tables to the table list

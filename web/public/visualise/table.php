@@ -1,11 +1,11 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 
-require $document_root . '\vendor\autoload.php';
-require $document_root . '\include\classes\Database.php';
-require $document_root . '\include\classes\Table.php';
-require $document_root . '\include\classes\Auth.php';
-require $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\vendor\autoload.php';
+require_once $document_root . '\include\classes\Database.php';
+require_once $document_root . '\include\classes\Table.php';
+require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Sensor.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

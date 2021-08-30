@@ -1,6 +1,6 @@
 <?php
 
-require ("Logging.php");
+require_once ("Logging.php");
 
 class Auth {
 
