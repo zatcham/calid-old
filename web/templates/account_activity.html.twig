@@ -19,6 +19,7 @@
             <tr>
                 <th>Date/Time</th>
                 <th>IP Address</th>
+                <th>User Agent</th>
                 <th>Attempt Type</th>
             </tr>
             </thead>
@@ -37,8 +38,11 @@
 
 {% block footer %}
     <script>
+        // Make the table sort in order of most recent activity
         $(document).ready( function () {
-            $('#activityTable').DataTable();
+            $('#activityTable').DataTable({
+                "order": [[ 0, "desc" ]]
+            });
         } );
     </script>
 {% endblock %}

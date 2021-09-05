@@ -1,0 +1,41 @@
+<?php
+
+$document_root = $_SERVER['DOCUMENT_ROOT'];
+require_once $document_root . '\vendor\autoload.php'; // hopefully importing on other pages works too???
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
+class Logging {
+    // Contains the functions for logging
+    private static function checkDebug() {
+        // TODO
+        return True;
+    }
+
+    public static function log($type, $message) {
+        $log = new Logger('Calid');
+//        $path = $_SERVER['DOCUMENT_ROOT'] . '\calid.log';
+        if (self::checkDebug()) {
+            $log->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '\calid.log', Logger::DEBUG));
+        } else {
+            $log->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '\calid.log', Logger::WARNING));
+        }
+
+        if (strtolower($type) == "warning") {
+            $log->warning($message);
+        } elseif (strtolower($type) == "error") {
+            $log->error($message);
+        } elseif (strtolower($type) == "info") {
+            $log->info($message);
+        } elseif (strtolower($type) == "debug") {
+            $log->debug($message);
+        } elseif (strtolower($type) == "critical") {
+            $log->critical($message);
+        } else {
+            return False;
+        }
+
+        return True;
+    }
+}

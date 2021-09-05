@@ -1,20 +1,20 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
-require $document_root . '\newdir\include\classes\Auth.php';
+require_once $document_root . '\vendor\autoload.php';
+require_once $document_root . '\include\classes\Database.php';
+require_once $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\include\classes\Auth.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: ../error/403.html");
+    exit;
+}
 
 // twig init
 $loader = new FilesystemLoader('../../templates');

@@ -3,8 +3,13 @@
 {% block title %}Data Tables{% endblock %}
 
 {% block header %}
-    <link href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <!-- Data Tables -->
+    <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <!-- Date time pciker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
 {% block content %}
@@ -17,7 +22,9 @@
         <form id="select_form" action="" method="POST">
             <div class="input-group mb-3 row">
                 <label for="sensor-select" class="col-sm-2 col-form-label">Sensor:</label>
-                <select class="form-select" id="sensor-select" style="width: 20em;">
+                <select class="form-select" id="sensor-select" name="sensor" style="width: 20em;">
+{#                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">#}
+{#                <datalist id="datalistOptions" name="sensor">#}
                 {% for sub_array in sensors %}
                     {% if selected == sub_array.SensorID %}
                         <option value="{{ sub_array.SensorID }}" selected>{{ sub_array.SensorName }}</option>
@@ -27,14 +34,75 @@
                 {% endfor %}
                 </select>
             </div>
+            <div class="input-group mb-3 row">
+                <div class="row">
+                    <label for="start-time" class="col-sm-2 col-form-label">Start Date/Time:</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control datetime" id="start-time" name="start">
+                    </div>
+                    <label for="end-time" class="col-sm-2 col-form-label">End Date/Time:</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control datetime" id="end-time" name="end">
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+                <label for="data_types" class="col-sm-2 col-form-label">Data Type: </label>
+                <div class="col-sm-10">
+                    <select class="form-select" id="data-select" name="data-select" style="width: 20em;">
+                        {% for sub_array in data_types %}
+                            {% if ',' in sub_array.Name %}
+                            {% else %}
+                                <option value="{{ sub_array.ID }}">{{ sub_array.Name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
             <div class="input-group mb-3">
                 <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Submit</button>
             </div>
         </form>
+        <hr>
+    {% endif %}
+    {% if t_data_show == "1" %}
+        <table class="table" id="tempTable">
+            <thead>
+                <tr>
+                    <th>Sensor Name</th>
+                    <th>Date/Time</th>
+                    <th>Temperature</th>
+                </tr>
+            </thead>
+        </table>
     {% endif %}
 {% endblock %}
 
 {% block footer %}
-
+<script>
+    $('.datetime').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        timePicker: true,
+        locale: {
+            format: 'YYYY-MM-DD hh:mm'
+        }
+    });
+</script>
+<script>
+    // Load data table
+    var dataset = {{ json|raw }}
+    $(document).ready(function () {
+        $('#tempTable').DataTable({
+            {#json: '{{ json|raw }}',#}
+            data: dataset,
+            columns: [
+                { title: "Sensor Name" },
+                { title: "Date/Time" },
+                { title: "Value" },
+            ],
+        });
+    });
+</script>
 
 {% endblock %}

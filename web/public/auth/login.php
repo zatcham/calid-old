@@ -1,15 +1,15 @@
 <?php
 session_start();
 $document_root = $_SERVER['DOCUMENT_ROOT'];
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
-require $document_root . '\newdir\include\classes\Auth.php';
+require_once $document_root . '\vendor\autoload.php';
+//echo ($document_root . '\include\classes\Database.php');
+require_once $document_root . '\include\classes\Database.php';
+require_once $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\include\classes\Auth.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-
-//
+use UAParser\Parser;
 
 // twig init
 $loader = new FilesystemLoader('../../templates');
@@ -18,6 +18,25 @@ $twig = new Environment($loader);
 $username = $password = "";
 $username_error = $password_error = $login_error = "";
 $login_success = "";
+
+// gets page to redirect to, if none go to dashboard
+if (isset($_GET)) {
+    if (!empty($_GET)) {
+        if (isset($_GET['msg'])) {
+            if (!empty(trim($_GET['msg']))) {
+                if (trim($_GET['msg']) == "autologout") {
+                    $login_success = "You were logged out due to inactivity.";
+                } elseif (trim($_GET['msg']) == "logout") {
+                    $login_success = "You were logged out successfully!";
+                }
+            }
+        }
+    } else {
+        $page_redirect = "";
+    }
+} else {
+    $page_redirect = "";
+}
 
 // if form submitted, run this code
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -53,15 +72,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $_SESSION["loggedin"] = true; // password is correct
                                 $_SESSION["id"] = $id;
                                 $_SESSION["username"] = $username;
-                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Success"); // adds login attempt to db
+                                $parser = Parser::create();
+                                $user_agent = $parser->parse($_SERVER['HTTP_USER_AGENT'])->toString(); // TODO: error handling if null
+                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Success", $user_agent); // adds login attempt to db
                                 $login_success = "Login success, redirecting...";
                                 $stmt->close();
-                                // Redirect user to welcome page
-                                header("location: ../home.php");
+                                // Redirect user to specified page, or dashboard
+                                if ($page_redirect == "") {
+                                    header("location: ../home.php");
+                                } else { // no page, go to dashboard
+                                    header("location: ../$page_redirect");
+                                }
+
                             } else {
                                 // Password is incorrect
                                 $login_error = "Invalid username or password.";
-                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Fail");
+                                $parser = Parser::create();
+                                $user_agent = $parser->parse($_SERVER['HTTP_USER_AGENT'])->toString(); // TODO: error handling if null
+                                Auth::addLoginAttempt($id, ($_SERVER['REMOTE_ADDR']), "Fail", $user_agent);
                             }
                         }
                     } else {

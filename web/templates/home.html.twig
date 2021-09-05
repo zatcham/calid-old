@@ -1,7 +1,6 @@
 {% extends "base.html.twig" %}
 
 {% block title %}Dashboard{% endblock %}
-{#{{ title }}#}
 
 {% block header %}
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -128,19 +127,10 @@
                     <script>
                         {{ hum_graph|raw }}
                     </script>
-
                 </div>
             </div>
         </div>
     </div>
-{#    <div class="card mb-4">#}
-{#        <div class="card-header">#}
-{#            <i class="fas fa-table me-1"></i>#}
-{#            DataTable Example#}
-{#        </div>#}
-{#        <div class="card-body">#}
-{#        </div>#}
-{#    </div>#}
 {% endblock %}
 
 {% block footer %}
@@ -155,5 +145,4 @@
             $('#chartnx-hum').css('display', 'none');
         }
     </script>
-
 {% endblock %}

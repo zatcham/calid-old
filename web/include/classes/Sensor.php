@@ -523,4 +523,34 @@ class Sensor {
         }
         return 0;
     }
+
+    // Delete sensor
+    public static function deleteSensor($sensor_id) {
+        // possible bug : if sensor has data, may need to delete twice. need to test....
+        $dbconn = Database::Connect();
+        $sql = "DELETE FROM sensor_details WHERE SensorID=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $sensor_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            // Now delete all data
+            $sql = "DELETE FROM sensor_data WHERE SensorID=?;";
+            $stmt = $dbconn->prepare($sql);
+            if ($stmt == False) {
+                return False;
+            }
+            $stmt->bind_param("s", $sensor_id);
+            $stmt->execute();
+            if ($stmt == False) {
+                return False;
+            } else {
+                return True;
+            }
+        }
+    }
 }

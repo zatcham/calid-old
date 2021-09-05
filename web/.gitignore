@@ -27,3 +27,5 @@ include/fake_data.php
 
 ### Exclude composer files
 vendor/*
+composer.phar
+/vendor/

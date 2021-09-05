@@ -1,20 +1,20 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Auth.php';
-require $document_root . '\newdir\include\classes\Account.php';
+require_once $document_root . '\vendor\autoload.php';
+require_once $document_root . '\include\classes\Database.php';
+require_once $document_root . '\include\classes\Auth.php';
+require $document_root . '\include\classes\Account.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: ../error/403.html");
+    exit;
+}
 
 // twig init
 $loader = new FilesystemLoader('../../templates');
@@ -30,7 +30,7 @@ $username = $_SESSION["username"];
 $form_success_list = $user_roles = [];
 $create_date = $pw_change_date = $user_role = $user_email = $user = "";
 $errors = $form_success = $no_user = $no_data = "";
-$is_user_me = "";
+$is_user_me = $selected_id = "";
 
 // get user specified in get
 if (!$_GET) {
@@ -133,6 +133,7 @@ if (Auth::isUserAdmin($userid) == False) { // can only access as am admin
                 'no_data' => $no_data,
                 'is_user_me' => $is_user_me,
                 'user_roles' => $user_roles,
+                'selected_id' => $selected_id,
             ]);
     } catch (\Twig\Error\LoaderError $e) {
         echo("Error loading page : Twig loader error");

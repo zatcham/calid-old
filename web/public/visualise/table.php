@@ -1,20 +1,25 @@
 <?php
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 
-require $document_root . '\newdir\vendor\autoload.php';
-require $document_root . '\newdir\include\classes\Database.php';
-require $document_root . '\newdir\include\classes\Sensor.php';
-require $document_root . '\newdir\include\classes\Auth.php';
+require_once $document_root . '\vendor\autoload.php';
+require_once $document_root . '\include\classes\Database.php';
+require_once $document_root . '\include\classes\Table.php';
+require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\include\variables.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Ozdemir\Datatables\Datatables;
+use Ozdemir\Datatables\DB\MySQL;
+
 
 // check session exists
 session_start();
-//if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-//    header("location: auth/login.php");
-//    exit;
-//}
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: ../error/403.html");
+    exit;
+}
 
 // twig init
 $loader = new FilesystemLoader('../../templates');
@@ -27,8 +32,12 @@ $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
 $errors = "";
 $selected_sensor = "";
+$t_data = [];
+$t_data_show = "0"; // issue with boolean, use int instead
+$data_types = Sensor::getListOfDataTypes(); // todo: error handling
+$json = "";
 
-// get data
+// get data for dropdown selector
 $dbconn = Database::Connect();
 $sqlq = "SELECT `SensorID`, `SensorName` FROM sensor_details WHERE `UserID`=$userid;"; // should be no risk of sql injection
 $stmt = $dbconn->prepare($sqlq);
@@ -43,7 +52,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 if ($data) { // should mean some data exists
     $no_data = False;
     $select_data = $data;
-    print_r($data);
+//    print_r($data);
 //    echo '<pre>'; print_r($data); echo '</pre>';
 } else { // no data or error
     $no_data = True;
@@ -53,12 +62,47 @@ if ($data) { // should mean some data exists
 // when selected
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST)) {
-        if (!empty($_POST['sensor-select'])) {
-            $errors = $_POST['sensor-select'];
-            $selected_sensor = $_POST['sensor-select'];
+        if (empty($_POST['start'])) {
+            $errors = "You must select a start date for the query!";
+        }
+        if (empty($_POST['end'])) {
+            $errors = "You must select a end date for the query!";
+        }
+        if (empty($_POST['sensor'])) {
+            $errors = "You must select a sensor!";
+        }
+        if (empty($_POST['data-select'])) {
+            $errors = "You must select a data type!";
+        }
+        // Add select for data type
+        if ($errors == "") {
+            // TODO: Add data types selection
+            $t_data = $temp_table = Table::getTemperatureTable($_POST['sensor'], $_POST['start'], $_POST['end']);
+            $t_data = array_map(function($t) {
+                return array(
+                    $t['SensorName'],
+                    $t['Date/Time'],
+                    $t['ROUND(`Temperature`)'],
+                );
+            }, $t_data);
+            $json = json_encode($t_data);
+            if ($t_data) {
+                $t_data_show = "1"; // TODO : seperate temp and hum
+            } else {
+                $t_data_show = "0";
+            }
         }
     }
 }
+
+// to implement get later - will allow for easy access
+//if (!$_GET) {
+//    // do nothing
+//} else {
+//    if (!empty($_GET['sensor'])) {
+//
+//    }
+//}
 
 // render page from template
 try {
@@ -71,6 +115,10 @@ try {
             'errors' => $errors,
             'sensors' => $select_data,
             'selected_sensor' => $selected_sensor,
+            't_data' => $t_data,
+            't_data_show' => $t_data_show,
+            'data_types' => $data_types,
+            'json' => $json,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");

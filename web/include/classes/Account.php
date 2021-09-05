@@ -1,7 +1,6 @@
 <?php
 
 class Account {
-
     // A lot of these functions are used for the account settings page
 
     // used to reset passwords, accepts plane text password and hashes it
@@ -557,6 +556,45 @@ class Account {
             return False;
         } else {
             return True;
+        }
+    }
+
+    // Delete user
+    public static function deleteUser($user_id) {
+        $dbconn = Database::Connect();
+        $sql = "DELETE FROM users WHERE id=?;";
+        $stmt = $dbconn->prepare($sql);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        } else {
+            return True;
+        }
+    }
+
+    public static function isUserFahrenheit($userid) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `TempUnit` FROM ui_settings WHERE `UserID`=? ;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->bind_param("s", $userid);
+        $stmt->execute();
+        if ($stmt == False) {
+            return False;
+        }
+        $stmt->store_result();
+        $stmt->bind_result($x);
+        $stmt->fetch();
+        if ($x == "2") {
+            return True;
+        } else {
+            return False;
         }
     }
 

@@ -104,14 +104,59 @@
                     <input type="text" class="form-control" id="status" name="status" value="{{ status }}" readonly>
                 </div>
             </div>
-            <div class="input-group mb-3">
-                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Changes</button>
+            <div class="btn-group mb-3" role="group">
+                <button type="submit" class="btn btn-success pr-1"><i class="fas fa-save"></i> Save Changes</button>
+                <button type="button" id="deleteSensor" class="btn btn-danger mx-3" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fas fa-trash"></i> Delete Sensor</button>
             </div>
         </form>
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Sensor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you absolutely sure that you want to delete this sensor, {{ sensor_name }}?
+                        <br>
+                        This is an irreversable action!
+                        Once you click delete, all data for this sensor will be gone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="deleteSnsrBtn" class="btn btn-danger">Delete Sensor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}
 
 {% block footer %}
-
-
+<script>
+    // Modal load
+    $(document).ready(function() {
+        $('#deleteModal').modal();
+    });
+</script>
+<script>
+    // On modal button click
+    $(document).ready(function () {
+        $("#deleteSnsrBtn").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "delete_sensor.php",
+                data: {
+                    sensor_id: {{ sensor_id }},
+                    delete_sensor: "True",
+                },
+                success: function (data) {
+                    alert(data);
+                    location = "list_sensors.php";
+                }
+            })
+        });
+    });
+</script>
 {% endblock %}
