@@ -6,9 +6,13 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Table.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\include\variables.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Ozdemir\Datatables\Datatables;
+use Ozdemir\Datatables\DB\MySQL;
+
 
 // check session exists
 session_start();
@@ -31,6 +35,7 @@ $selected_sensor = "";
 $t_data = [];
 $t_data_show = "0"; // issue with boolean, use int instead
 $data_types = Sensor::getListOfDataTypes(); // todo: error handling
+$json = "";
 
 // get data for dropdown selector
 $dbconn = Database::Connect();
@@ -66,9 +71,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($_POST['sensor'])) {
             $errors = "You must select a sensor!";
         }
+        if (empty($_POST['data-select'])) {
+            $errors = "You must select a data type!";
+        }
         // Add select for data type
         if ($errors == "") {
+            // TODO: Add data types selection
             $t_data = $temp_table = Table::getTemperatureTable($_POST['sensor'], $_POST['start'], $_POST['end']);
+            $t_data = array_map(function($t) {
+                return array(
+                    $t['SensorName'],
+                    $t['Date/Time'],
+                    $t['ROUND(`Temperature`)'],
+                );
+            }, $t_data);
+            $json = json_encode($t_data);
             if ($t_data) {
                 $t_data_show = "1"; // TODO : seperate temp and hum
             } else {
@@ -101,6 +118,7 @@ try {
             't_data' => $t_data,
             't_data_show' => $t_data_show,
             'data_types' => $data_types,
+            'json' => $json,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");
