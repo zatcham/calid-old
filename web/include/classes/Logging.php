@@ -16,7 +16,7 @@ class Logging {
         $log = new Logger('Calid');
         $log->setTimezone(new \DateTimeZone('UTC'));
 //        $path = $_SERVER['DOCUMENT_ROOT'] . '\calid.log';
-        $path = __DIR__ . '..\..\calid.log';
+        $path = __DIR__ . '/../../calid.log';
         if (self::checkDebug()) {
             $log->pushHandler(new StreamHandler($path, Logger::DEBUG));
         } else {
