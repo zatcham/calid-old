@@ -16,10 +16,11 @@ class Logging {
         $log = new Logger('Calid');
         $log->setTimezone(new \DateTimeZone('UTC'));
 //        $path = $_SERVER['DOCUMENT_ROOT'] . '\calid.log';
+        $path = __DIR__ . '..\..\calid.log';
         if (self::checkDebug()) {
-            $log->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '\calid.log', Logger::DEBUG));
+            $log->pushHandler(new StreamHandler($path, Logger::DEBUG));
         } else {
-            $log->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '\calid.log', Logger::WARNING));
+            $log->pushHandler(new StreamHandler($path, Logger::WARNING));
         }
 
         if (strtolower($type) == "warning") {
