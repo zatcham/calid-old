@@ -1,5 +1,7 @@
 <?php
 
+require_once ("Database.php");
+
 class Sensor {
 
     // gets sensors assigned to user
@@ -74,7 +76,6 @@ class Sensor {
         $stmt = $dbconn->prepare($sqlq);
         $stmt->bind_param("sssssss", $userid, $sensor_name, $sensor_type, $sensor_loc, $data_types, $api_key, $shared_with);
         $stmt->execute(); // we run the func once per sensor, no bulk yet
-        log("aNS - added succesfuly");
         $stmt->close();
         $dbconn->close();
     }
@@ -452,12 +453,11 @@ class Sensor {
     // generates api key for sensor
     protected static function generateAPIKey($id) { // Generates API key for sensor - appends user id to output string
         $chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $len = strlen($chars);
+        $len = 11; // length of key output
         $x = '';
         for ($i = 0; $i < $len; $i++) {
-            $x .= $chars[mt_rand(0, $len - 1)];
+            $x .= $chars[mt_rand(0, strlen($chars)- 1)];
         }
-        $x .= $id;
         return $x;
     }
 
@@ -467,6 +467,7 @@ class Sensor {
         $sqlq = "INSERT INTO sensor_details (`UserID`, `SensorName`, `SensorLoc`, `DataTypes`, `APIKey`, `show_on_avg`) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $dbconn->prepare($sqlq);
         if ($stmt == False) {
+            Logging::log("error", "Problem occured in Sensor/addNewSensor, Issue occured whilst preparing query. Error: $stmt->error");
             return False;
         }
         $api_key = self::generateAPIKey($userid);
@@ -476,6 +477,7 @@ class Sensor {
         $sensor_id = $dbconn->insert_id;
         $stmt->close();
         if ($stmt == False) {
+            Logging::log("error", "Problem occured in Sensor/addNewSensor, Issue occured whilst executing query Error: $stmt->error");
             return False;
         } else {
             return $sensor_id;
