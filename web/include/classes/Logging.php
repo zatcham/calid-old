@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__  . '\..\..\vendor\autoload.php'; // hopefully importing on other pages works too???
+require_once __DIR__  . '/../../vendor/autoload.php'; // hopefully importing on other pages works too???
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

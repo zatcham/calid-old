@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__  . '\..\variables.php';
-require_once __DIR__  . '\..\..\vendor\autoload.php';
+require_once __DIR__  . '/../variables.php';
+require_once __DIR__  . '/../../vendor/autoload.php';
 require_once ("Account.php");
 
 use PhpUnitConversion\Unit\Temperature;

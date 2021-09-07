@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__  . '\..\variables.php';
+require_once __DIR__  . '/../variables.php';
 require_once ("Logging.php");
 
 class Table {

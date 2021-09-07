@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__  . '\..\variables.php';
+require_once __DIR__  . '/../variables.php';
 require_once ("Logging.php");
 
 // we asusme autoload has run to load in phpmailer
@@ -41,21 +41,21 @@ class Email  {
 
     // reads the templates from the template files
     public static function readTemplates($email_type) {
-        $template_path = __DIR__ . '\..\..\email-templates';
+        $template_path = __DIR__ . '/../../email-templates';
         if ($email_type == "alert") {
-            $template_path .= '\alert.html';
+            $template_path .= '/alert.html';
             $myfile = fopen($template_path, "r") or die("Unable to open file!");
             $file_out = fread($myfile, filesize($template_path));
             fclose($myfile);
             return ($file_out);
         } elseif ($email_type == "verify-account") {
-            $template_path .= '\verify-account.html';
+            $template_path .= '/verify-account.html';
             $myfile = fopen($template_path, "r") or die("Unable to open file!");
             $file_out = fread($myfile, filesize($template_path));
             fclose($myfile);
             return ($file_out);
         } elseif ($email_type == "reset-pass") {
-            $template_path .= '\reset-pass.html';
+            $template_path .= '/reset-pass.html';
             $myfile = fopen($template_path, "r") or die("Unable to open file!");
             $file_out = fread($myfile, filesize($template_path));
             fclose($myfile);
