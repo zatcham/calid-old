@@ -13,20 +13,21 @@
 {% endblock %}
 
 {% block content %}
+    {# TODO: Responsiveness #}
     {% if errors is not empty %}
         <div class="alert alert-danger">{{ errors }}</div>
     {% endif %}
     {% if no_data %}
         No sensors
     {% else %}
-        <form id="select_form" action="" method="POST">
-            <div class="input-group mb-3 row">
+        <form class="form-horizontal" id="select_form" action="" method="POST">
+            <div class="input-group mb-3">
                 <label for="sensor-select" class="col-sm-2 col-form-label">Sensor:</label>
-                <select class="form-select" id="sensor-select" name="sensor" style="width: 20em;">
+                <select class="form-select" id="sensor-select" name="sensor">
 {#                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">#}
 {#                <datalist id="datalistOptions" name="sensor">#}
                 {% for sub_array in sensors %}
-                    {% if selected == sub_array.SensorID %}
+                    {% if selected_sensor == sub_array.SensorID %}
                         <option value="{{ sub_array.SensorID }}" selected>{{ sub_array.SensorName }}</option>
                     {% else %}
                         <option value="{{ sub_array.SensorID }}">{{ sub_array.SensorName }}</option>
@@ -34,46 +35,43 @@
                 {% endfor %}
                 </select>
             </div>
-            <div class="input-group mb-3 row">
-                <div class="row">
+            <div class="input-group mb-3">
+{#                <div class="row">#}
                     <label for="start-time" class="col-sm-2 col-form-label">Start Date/Time:</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control datetime" id="start-time" name="start">
+                        <input type="text" class="form-control datetime" id="start-time" name="start" style="width: 20em;">
                     </div>
                     <label for="end-time" class="col-sm-2 col-form-label">End Date/Time:</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control datetime" id="end-time" name="end">
+                        <input type="text" class="form-control datetime" id="end-time" name="end" style="width: 20em;">
                     </div>
-                </div>
+{#                </div>#}
             </div>
-            <div class="input-group mb-3 row">
+            <div class="input-group mb-3">
                 <label for="data_types" class="col-sm-2 col-form-label">Data Type: </label>
                 <div class="col-sm-10">
                     <select class="form-select" id="data-select" name="data-select" style="width: 20em;">
                         {% for sub_array in data_types %}
                             {% if ',' in sub_array.Name %}
                             {% else %}
-                                <option value="{{ sub_array.ID }}">{{ sub_array.Name }}</option>
+                                {% if selected_datatype == sub_array.ID %}
+                                    <option value="{{ sub_array.ID }}" selected>{{ sub_array.Name }}</option>
+                                {% else %}
+                                    <option value="{{ sub_array.ID }}">{{ sub_array.Name }}</option>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </select>
                 </div>
             </div>
             <div class="input-group mb-3">
-                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Submit</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Get Data</button>
             </div>
         </form>
         <hr>
     {% endif %}
     {% if t_data_show == "1" %}
         <table class="table" id="tempTable">
-            <thead>
-                <tr>
-                    <th>Sensor Name</th>
-                    <th>Date/Time</th>
-                    <th>Temperature</th>
-                </tr>
-            </thead>
         </table>
     {% endif %}
 {% endblock %}
@@ -99,7 +97,7 @@
             columns: [
                 { title: "Sensor Name" },
                 { title: "Date/Time" },
-                { title: "Value" },
+                { title: "{{ value_col }}" }, // dynamic col name
             ],
         });
     });

@@ -31,11 +31,11 @@ $twig->addGlobal('file_path', $directory_path);
 $userid = $_SESSION["id"];
 $username = $_SESSION["username"];
 $errors = "";
-$selected_sensor = "";
+$selected_sensor = $selected_datatype = "";
 $t_data = [];
 $t_data_show = "0"; // issue with boolean, use int instead
 $data_types = Sensor::getListOfDataTypes(); // todo: error handling
-$json = "";
+$json = $value_col = "";
 
 // get data for dropdown selector
 $dbconn = Database::Connect();
@@ -61,6 +61,8 @@ if ($data) { // should mean some data exists
 
 // when selected
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // TODO: Check sensor belongs to user
+    // TODO: Allow multiple selection
     if (!empty($_POST)) {
         if (empty($_POST['start'])) {
             $errors = "You must select a start date for the query!";
@@ -76,18 +78,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         // Add select for data type
         if ($errors == "") {
+            $selected_sensor = $_POST['sensor'];
+            $selected_datatype = $_POST['data-select'];
             // TODO: Add data types selection
-            $t_data = $temp_table = Table::getTemperatureTable($_POST['sensor'], $_POST['start'], $_POST['end']);
-            $t_data = array_map(function($t) {
-                return array(
-                    $t['SensorName'],
-                    $t['Date/Time'],
-                    $t['ROUND(`Temperature`)'],
-                );
-            }, $t_data);
-            $json = json_encode($t_data);
+            if ($selected_datatype == 1) { // This should be dynamic 🤷‍♀
+                $t_data = $temp_table = Table::getTemperatureTable($_POST['sensor'], $_POST['start'], $_POST['end']);
+                $t_data = array_map(function($t) {
+                    return array(
+                        $t['SensorName'],
+                        $t['Date/Time'],
+                        $t['ROUND(`Temperature`)'],
+                    );
+                }, $t_data);
+                $json = json_encode($t_data);
+                $value_col = "Temperature (°C)"; // TODO : Add conversion
+            } elseif ($selected_datatype == 2) {
+                $t_data = $temp_table = Table::getHumidityTable($_POST['sensor'], $_POST['start'], $_POST['end']);
+                $t_data = array_map(function($t) {
+                    return array(
+                        $t['SensorName'],
+                        $t['Date/Time'],
+                        $t['ROUND(`Humidity`)'],
+                    );
+                }, $t_data);
+                $json = json_encode($t_data);
+                $value_col = "Humidity (%)";
+            } elseif ($selected_datatype == 3) {
+                $t_data = $temp_table = Table::getUVTable($_POST['sensor'], $_POST['start'], $_POST['end']);
+                $t_data = array_map(function($t) {
+                    return array(
+                        $t['SensorName'],
+                        $t['Date/Time'],
+                        $t['ROUND(`UV`)'],
+                    );
+                }, $t_data);
+                $json = json_encode($t_data);
+                $value_col = "UV (Index)";
+            }
+
             if ($t_data) {
-                $t_data_show = "1"; // TODO : seperate temp and hum
+                $t_data_show = "1";
             } else {
                 $t_data_show = "0";
             }
@@ -119,6 +149,8 @@ try {
             't_data_show' => $t_data_show,
             'data_types' => $data_types,
             'json' => $json,
+            'selected_datatype' => $selected_datatype,
+            'value_col' => $value_col,
         ]);
 } catch (\Twig\Error\LoaderError $e) {
     echo ("Error loading page : Twig loader error");
