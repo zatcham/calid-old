@@ -1,17 +1,14 @@
 <?php
 
-require_once __DIR__  . '\..\..\vendor\autoload.php';
-require_once __DIR__  . '\..\..\include\classes\Database.php';
-require_once __DIR__  . '\..\..\include\classes\Table.php';
-require_once __DIR__  . '\..\..\include\classes\Auth.php';
-require_once __DIR__  . '\..\..\include\classes\Sensor.php';
-require_once __DIR__  . '\..\..\include\variables.php';
+require_once __DIR__  . '/../../vendor/autoload.php';
+require_once __DIR__  . '/../../include/classes/Database.php';
+require_once __DIR__  . '/../../include/classes/Table.php';
+require_once __DIR__  . '/../../include/classes/Auth.php';
+require_once __DIR__  . '/../../include/classes/Sensor.php';
+require_once __DIR__  . '/../../include/variables.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\MySQL;
-
 
 // check session exists
 session_start();
