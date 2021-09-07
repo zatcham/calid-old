@@ -3,14 +3,117 @@
 {% block title %}Graphing{% endblock %}
 
 {% block header %}
+    <!-- Highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!-- Date time pciker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {% endblock %}
 
 {% block content %}
-
+    {% if errors is not empty %}
+        <div class="alert alert-danger">{{ errors }}</div>
+    {% endif %}
+    {% if no_data %}
+        No sensors
+    {% else %}
+        <form class="form-horizontal" id="select_form" action="" method="POST">
+            <div class="input-group mb-3">
+                <label for="sensor-select" class="col-sm-2 col-form-label">Sensor:</label>
+                <div class="col-sm-10">
+                    <select class="form-select" id="sensor-select" name="sensor" style="width: 20em;">
+                        {% for sub_array in sensors %}
+                            {% if selected_sensor == sub_array.SensorID %}
+                                <option value="{{ sub_array.SensorID }}" selected>{{ sub_array.SensorName }}</option>
+                            {% else %}
+                                <option value="{{ sub_array.SensorID }}">{{ sub_array.SensorName }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <label for="start-time" class="col-sm-2 col-form-label">Start Date/Time:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control datetime" id="start-time" name="start" style="width: 20em;">
+                </div>
+                <label for="end-time" class="col-sm-2 col-form-label mt-3">End Date/Time:</label>
+                <div class="col-sm-10 mt-3">
+                    <input type="text" class="form-control datetime" id="end-time" name="end" style="width: 20em;">
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <label for="data_types" class="col-sm-2 col-form-label">Data Type: </label>
+                <div class="col-sm-10">
+                    <select class="form-select" id="data-select" name="data-select" style="width: 20em;">
+                        {% for sub_array in data_types %}
+                            {% if ',' in sub_array.Name %}
+                            {% else %}
+                                {% if selected_datatype == sub_array.ID %}
+                                    <option value="{{ sub_array.ID }}" selected>{{ sub_array.Name }}</option>
+                                {% else %}
+                                    <option value="{{ sub_array.ID }}">{{ sub_array.Name }}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Get Data</button>
+            </div>
+        </form>
+        <hr>
+    {% endif %}
+    {% if g_data_show == "1" %}
+        <div id="chart" class="container"></div>
+    {% endif %}
 {% endblock %}
 
 {% block footer %}
-
-
+    <script>
+        // Date time picker
+        $('.datetime').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            timePicker: true,
+            locale: {
+                format: 'YYYY-MM-DD hh:mm'
+            }
+        });
+    </script>
+    <script>
+        // Graphing
+        var data = {{ json|raw }}
+        var dt = {{ dt|raw }} // Date time
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.9') + ')';
+        };
+        var chart = new Highcharts.Chart({
+            chart:{ renderTo : 'chart' },
+            title: { text: "{{ chart_title }}" },
+            series: [{
+                showInLegend: false,
+                data: data
+            }],
+            plotOptions: {
+                line: { animation: true,
+                    dataLabels: { enabled: true }
+                },
+                series: { color: randomColor(1.0) }
+            },
+            xAxis: {
+                type: 'datetime',
+                categories: dt
+            },
+            yAxis: {
+                title: { text: '{{ y_axis }}' }
+            },
+            credits: { enabled: false }
+        });
+    </script>
 {% endblock %}
