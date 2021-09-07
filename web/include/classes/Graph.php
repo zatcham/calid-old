@@ -277,4 +277,64 @@ JSOUT;
             return ("There is either no temperature data available for the past 24 hours, or an error has occurred.");
         }
     }
+
+    public static function getTemperatureGraph($sensor_id, $start_date, $end_date) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `Date/Time`, ROUND(`Temperature`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 200;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Graph - getTemperatureGraph");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
+        $stmt->execute();
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getTemperatureGraph");
+            return False;
+        } else {
+
+            return $data;
+        }
+    }
+
+    public static function getHumidityGraph($sensor_id, $start_date, $end_date) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `Date/Time`, ROUND(`Humidity`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 200;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Graph - getHumidityGraph");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
+        $stmt->execute();
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getHumidityGraph");
+            return False;
+        } else {
+            return $data;
+        }
+    }
+
+    public static function getUVGraph($sensor_id, $start_date, $end_date) {
+        $dbconn = Database::Connect();
+        $sqlq = "SELECT `Date/Time`, ROUND(`UV`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 200;";
+        $stmt = $dbconn->prepare($sqlq);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Graph - getUVGraph");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
+        $stmt->execute();
+        $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getUVGraph");
+            return False;
+        } else {
+            return $data;
+        }
+    }
+
 }
+
