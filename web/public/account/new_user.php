@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -53,12 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($x = Account::createNewUser($_POST['uname'], $_POST['inp-email'], $_POST['inp-cpassword'], $_POST['role-select'])) {
                 if ($x != False) {
                     $form_success = "User created successfully... redirecting you";
+                    $c_usr = $_POST['uname'];
+                    $c_em = $_POST['inp-email'];
+                    Logging::log("info", "User created successfully in account/new_user. Details: User ID: $x, ID for user created: $x, Username for user created: $c_usr, Email for user created: $c_em ");
                     header("refresh:3 url=edit_user.php?user=$x"); // waits 3s before redirect
                 } else {
                     $form_error = "An unexpected error occured whilst trying to create the user";
+                    $c_usr = $_POST['uname'];
+                    $c_em = $_POST['inp-email'];
+                    Logging::log("error", "Problem occured in account/new_user, Type: Issue creating user, Details: User ID: $x, Username for user to create: $c_usr, Email for user to create: $c_em ");
                 }
             } else {
                 $form_error = "An unexpected error occured whilst trying to create the user";
+                $c_usr = $_POST['uname'];
+                $c_em = $_POST['inp-email'];
+                Logging::log("error", "Problem occured in account/new_user, Type: Issue creating user, Details: User ID: $x, Username for user to create: $c_usr, Email for user to create: $c_em ");
             }
         }
     }

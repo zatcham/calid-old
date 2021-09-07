@@ -4,7 +4,8 @@ $document_root = $_SERVER['DOCUMENT_ROOT'];
 require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Auth.php';
-require $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -55,6 +56,7 @@ if (!$_GET) {
         } else {
             $no_user = True;
             $errors = "Error: The user selected does not exist. Please return to the user list and try again";
+            Logging::log("warning", "Problem in account/edit_user. Type: Not existent user selected. Details: User ID: $userid");
         }
     }
 }
@@ -71,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'User Role'. Please try again";
+                    Logging::log("error", "Problem in account/edit_user. Type: Problem changing user role. Details: User ID: $userid, User being edited: $selected_id");
                 }
             }
             if ($_POST['inp-email'] != $user_email) { // not equal, change it
@@ -79,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'Email Address'. Please try again";
+                    Logging::log("error", "Problem in account/edit_user. Type: Problem changing email. Details: User ID: $userid, User being edited: $selected_id");
                 }
             }
             if (!empty($_POST['inp-npassword'])) {
@@ -90,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $count += 1;
                             } else {
                                 $errors = "Error encountered whilst changing 'Password'. Please try again";
+                                Logging::log("error", "Problem in account/edit_user. Type: Problem changing password. Details: User ID: $userid, User being edited: $selected_id");
                             }
                         } else {
                             $errors = "Error: The password entered must be a minimum of 8 characters.";
@@ -101,9 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             if ($count > 0) {
                 $form_success = "The following options were updated successfully: ";
+                Logging::log("info", "User $userid has changed the following items for User $selected_id : ". json_encode($form_success_list));
             }
         } else {
             $errors = "Unauthroised: You must be an administrator to make use of this page";
+            Logging::log("error", "Problem in account/edit_user. Type: Unauthorised user. Details: User ID: $userid, User being edited: $selected_id");
         }
     }
 }

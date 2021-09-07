@@ -2,36 +2,64 @@
 
 $document_root = $_SERVER['DOCUMENT_ROOT'];
 require_once ($document_root . "/include/variables.php");
+require_once ("Logging.php");
 
 class Table {
+    // All limited to 1000 due to "issues"
     public static function getTemperatureTable($sensor_id, $start_date, $end_date) {
         $dbconn = Database::Connect();
-        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`Temperature`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 495";
+        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`Temperature`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 1000;";
         $stmt = $dbconn->prepare($sqlq);
-        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id); // TODO: error handling
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Table - getTemperatureTable");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
         $stmt->execute();
         $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-//        $data = $stmt->get_result()->fetch_array();
-        return $data;
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getTemperatureTable");
+            return False;
+        } else {
+            return $data;
+        }
     }
 
     public static function getHumidityTable($sensor_id, $start_date, $end_date) {
         $dbconn = Database::Connect();
-        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`Humidity`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC";
+        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`Humidity`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 1000";
         $stmt = $dbconn->prepare($sqlq);
-        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id); // TODO: error handling
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Table - getHumidityTable");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
         $stmt->execute();
         $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        return $data;
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getHumidityTable");
+            return False;
+        } else {
+            return $data;
+        }
     }
 
     public static function getUVTable($sensor_id, $start_date, $end_date) {
         $dbconn = Database::Connect();
-        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`UV`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC";
+        $sqlq = "SELECT `SensorName`, `Date/Time`, ROUND(`UV`) FROM sensor_data WHERE `Date/Time` >= ? and `Date/Time` <= ? and `SensorID`=? ORDER BY (`Date/Time`) DESC LIMIT 1000";
         $stmt = $dbconn->prepare($sqlq);
-        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id); // TODO: error handling
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to prepare query in Table - getUVTable");
+            return False;
+        }
+        $stmt->bind_param("sss", $start_date, $end_date, $sensor_id);
         $stmt->execute();
         $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        return $data;
+        if ($stmt == False) {
+            Logging::log("error", "Error occured whilst attempting to execute query in Table - getUVTable");
+            return False;
+        } else {
+            return $data;
+        }
     }
 }

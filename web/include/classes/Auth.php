@@ -17,7 +17,7 @@ class Auth {
         if ($r == "2") { // 2 = admin, 1 = user, 3 = not verified | could do db lookup but why bother
             return True;
         } else {
-            $error = $stmt->error();
+            $error = $stmt->error;
             \Logging::log('error', "SQL Error occured in Auth/isUserAdmin. Details: $error");
             return False;
         }

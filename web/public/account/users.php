@@ -6,6 +6,7 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -35,10 +36,12 @@ $sqlq = "SELECT `id`, `username`, `email`, `UserRole`, `created_at`, `LastPWChan
 $stmt = $dbconn->prepare($sqlq);
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
+    Logging::log("error", "Problem in account/users. Type: Error whilst preparing SQL query. Details: User ID: $userid");
 }
 $stmt->execute();
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
+    Logging::log("error", "Problem in account/users. Type: Error whilst executing SQL query. Details: User ID: $userid");
 }
 $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 if ($data) { // should mean some data exists
@@ -54,6 +57,7 @@ if ($data) { // should mean some data exists
 } else { // no data or error
     $no_data = True;
     $table_data = "none";
+    Logging::log("warning", "Problem occured in account/users, Type: No data found / error with query, Details: User ID: $userid");
 }
 
 

@@ -15,6 +15,7 @@ class Logging {
 
     public static function log($type, $message) {
         $log = new Logger('Calid');
+        $log->setTimezone(new \DateTimeZone('UTC'));
 //        $path = $_SERVER['DOCUMENT_ROOT'] . '\calid.log';
         if (self::checkDebug()) {
             $log->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '\calid.log', Logger::DEBUG));

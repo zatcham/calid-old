@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -35,6 +36,7 @@ $from_page = "";
 if (!$_GET) {
     $no_sensor = True;
     $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
+    Logging::log("warning", "Problem in sensors/edit_sensor. Type: No Sensor ID selected. Details: User ID: $userid");
 } else {
     if (!empty($_GET['page'])) { // used to set go back button desitnation
         $x = $_GET['page'];
@@ -62,9 +64,11 @@ if (!$_GET) {
             $data_types = Sensor::getListOfDataTypes(); // TODO : Convert to check boxes
         } else {
             $errors = "Error: The sensor specified does not belong to this user";
+            Logging::log("warning", "Problem in sensors/edit_sensor. Type: Sensor does not belong to the user. Details: User ID: $userid, Sensor: $sensor_id");
         }
     } else {
         $errors = "Error: A sensor has not been selected. Please return to the sensor list and try again.";
+        Logging::log("warning", "Problem in sensors/edit_sensor. Type: No Sensor ID selected. Details: User ID: $userid");
         $no_sensor = True;
     }
 }
@@ -84,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'Sensor Name'. Please try again";
+                    Logging::log("error", "Problem in sensors/edit_sensor. Type: Problem changing sensor name. Details: User ID: $userid, Sensor being edited: $sensor_id");
                 }
             }
             if ($_POST['sensor_location'] != $sensor_location) {
@@ -92,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'Sensor Location'. Please try again";
+                    Logging::log("error", "Problem in sensors/edit_sensor. Type: Problem changing sensor location. Details: User ID: $userid, Sensor being edited: $sensor_id");
                 }
             }
             if ($_POST['data-select'] != $current_data_type) {
@@ -100,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'Data Types'. Please try again";
+                    Logging::log("error", "Problem in sensors/edit_sensor. Type: Problem changing data types. Details: User ID: $userid, Sensor being edited: $sensor_id");
                 }
             }
             if (isset($_POST['show_on_avg'])) {
@@ -109,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $count += 1;
                     } else {
                         $errors = "Error encountered whilst changing 'Show On Average'. Please try again";
+                        Logging::log("error", "Problem in sensors/edit_sensor. Type: Problem changing show on average. Details: User ID: $userid, Sensor being edited: $sensor_id");
                     }
                 }
             } else {
@@ -117,13 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $count += 1;
                 } else {
                     $errors = "Error encountered whilst changing 'Show On Average'. Please try again";
+                    Logging::log("error", "Problem in sensors/edit_sensor. Type: Problem changing show on average. Details: User ID: $userid, Sensor being edited: $sensor_id");
                 }
             }
             if ($count > 0) {
                 $form_success = "The following options were updated successfully: ";
+                Logging::log("info", "User $userid has changed the following items for Sensor $sensor_id : ". json_encode($form_success_list));
             }
         } else {
             $errors = "Error: The sensor specified does not belong to this user";
+            Logging::log("warning", "Problem in sensors/edit_sensor. Type: Sensor does not belong to user. Details: User ID: $userid, Sensor being edited: $sensor_id");
         }
     }
 }

@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Account.php';
 require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -48,10 +49,12 @@ if (!$_GET) {
                         if ($x != False) {
                             if (Account::resetPassword($x, $password)) {
                                 Account::useResetKey($_GET['key']);
+                                Logging::log("info", "Password reset successfully in auth/reset_pass. Details: User ID: $x");
                                 $success = "Password reset successfully! Redirecting you to the login page...";
                                 header("refresh:3 url=login.php");
                             } else {
                                 $errors = "An unexpected error occured whilst attempting to reset the password";
+                                Logging::log("error", "Error occured in auth/reset_pass. Type: Resetting password, Details: User ID: $x");
                             }
                         }
                     } else {
@@ -60,11 +63,13 @@ if (!$_GET) {
                 }
             } else {
                 $errors = "Error: Invalid POST request.";
+                Logging::log("error", "Error occured in auth/reset_pass. Type: Invalid POST request");
             }
         }
     } else {
         $errors = "Error: Invalid GET request.";
         $no_get = True;
+        Logging::log("error", "Error occured in auth/reset_pass. Type: Invalid GET request");
     }
 }
 
