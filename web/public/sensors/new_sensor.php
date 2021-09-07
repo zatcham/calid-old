@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -67,9 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $x = Sensor::addNewSensor($userid, $_POST['sensor_name'], $_POST['sensor_location'], $data_type, $show_on_avg);
             if ($x !== False) {
                 $form_success = "New sensor added successfully.. redirecting you";
+                Logging::log("info", "New sensor created successfully in sensors/new_sensor. Details: User ID: $userid, Sensor ID: $x");
                 header("refresh:3 url=edit_sensor.php?sensor=$x&page=new_sensor"); // waits 3s before redirect
             } else {
                 $form_error = "Error encountered whilst trying to create a new sensor.";
+                Logging::log("error", "Problem in sensors/new_sensor. Type: Error whilst creating new sensor. Details: User ID: $userid");
             }
         }
     }

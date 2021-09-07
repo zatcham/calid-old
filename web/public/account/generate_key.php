@@ -6,6 +6,7 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -30,8 +31,9 @@ $form_success = $form_error = $key = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['hide'])) {
-        $key = Account::generateKey($userid);
+        $key = Account::generateKey($userid); // TODO : turn to if
         $form_success = "Key generated successfully!"; // TODO: maybe show list of keys?
+        Logging::log("info", "Key generated successfullyy in account/generate_key. Details: User ID: $userid");
     }
 }
 

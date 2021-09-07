@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -37,11 +38,13 @@ $sqlq = "SELECT `date_time`, `ip_address`, `user_agent`, `attempt_type`  FROM ac
 $stmt = $dbconn->prepare($sqlq);
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
+    Logging::log("error", "Problem in account/activity. Type: Error whilst preparing SQL query. Details: User ID: $userid");
 }
 $stmt->bind_param("s", $userid);
 $stmt->execute();
 if ($stmt == False) {
     $errors = "Error encountered whilst trying to query database";
+    Logging::log("error", "Problem in account/activity. Type: Error whilst executing SQL query. Details: User ID: $userid");
 }
 $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 if ($data) { // should mean some data exists
@@ -51,6 +54,7 @@ if ($data) { // should mean some data exists
 } else { // no data or error
     $no_data = True;
     $table_data = "none";
+    Logging::log("warning", "Problem in account/activity. Type: No table data or error. Details: User ID: $userid");
 }
 
 // render page from template

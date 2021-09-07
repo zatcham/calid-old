@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -26,9 +27,11 @@ if ($_GET) {
                     $success = "Account verified successfully!";
                 } else {
                     $errors = "Error: An unexpected error occured.";
+                    Logging::log("error", "Error occured in auth/verify_email. Type: Using verificaion code");
                 }
             } else {
                 $errors = "Error: An unexpected error occured.";
+                Logging::log("error", "Error occured in auth/verify_email. Type: Verifying user");
             }
         } else {
             $errors = "The verification code used is invalid.";

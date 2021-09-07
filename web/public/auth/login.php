@@ -6,6 +6,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -95,9 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } else {
                         // Username doesn't exist
                         $login_error = "Invalid username or password."; // we cant log this as no usr name | well we could i guess....
+                        $parser = Parser::create();
+                        $user_agent = $parser->parse($_SERVER['HTTP_USER_AGENT'])->toString(); // TODO: error handling if null
+                        $ip = $_SERVER['REMOTE_ADDR'];
+                        Logging::log("info", "New access attempt: Username: $username, IP Address: $ip, User Agent: $user_agent, Attempt Type: Fail, Reason: Non Existent User");
                     }
                 } else {
                     $login_error = "Oops! Something went wrong. Please try again later.";
+                    Logging::log("warning", "Unknown error in auth/login");
                 }
             }
         }

@@ -4,6 +4,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Sensor.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 session_start();
 
@@ -26,18 +27,23 @@ if ($_POST) { // If post request has been sent from edit_sensor
                 echo("Sensor deleted successfully, redirecting you...");
             } else {
                 echo("An unexpected error occured when deleting this sensor");
+                $sensor = $_POST['sensor_id'];
+                Logging::log("error", "Problem in sensors/delete_sensor. Type: Deleting sensor, Details: User ID: $userid, Sensor: $sensor");
             }
         } else {
             // No sensor id
             echo("Error: Request did not contain a sensor id");
+            Logging::log("warning", "Problem in sensors/delete_sensor. Type: No Sensor ID in request. Details: User ID: $userid");
         }
     } else {
         // Delete not requested
         echo("Error: Request did not contain delete property");
+        Logging::log("warning", "Problem in sensors/delete_sensor. Type: Request didn't include the delete property. Details: User ID: $userid");
     }
 } else {
     // No psot request
     echo("Error: Not a POST request");
+    Logging::log("warning", "Problem in sensors/delete_sensor. Type: Request wasn't a POST request. Details: User ID: $userid");
 }
 
 ?>

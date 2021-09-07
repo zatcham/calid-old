@@ -6,6 +6,7 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Sensor.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -61,8 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($reset_error == "") {
                 if (Account::resetPassword($userid, $_POST["inp-cnpassword"])) { // returns true on sucess
                     $reset_success = "Password has been reset successfully";
+                    Logging::log("info", "User $userid's password has been reset in account/reset_pass successfully.");
                 } else {
                     $reset_error = "An unexpected error has occured. Please try again.";
+                    Logging::log("error", "Problem occured in account/reset_pass, Type: Issue resetting password, Details: User ID: $userid");
                 }
         }
     }

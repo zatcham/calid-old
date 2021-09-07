@@ -5,6 +5,7 @@ require_once $document_root . '\vendor\autoload.php';
 require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Account.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -37,8 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (Account::checkPassword($userid, $_POST['inp-cpassword'])) { // is password valid
                 if (Account::changeEmail($userid, $_POST['inp-email'])) { // run change email funct
                     $form_success = "Account updated successfully! Please refresh this page for the changes to appear.";
+                    Logging::log("info", "Account updated successfully in account/settings. Details: User ID: $userid");
                 } else {
                     $form_error = "An unexpected error has occured. Please try again.";
+                    Logging::log("error", "Problem occured in account/settings, Type: Issue changing email, Details: User ID: $userid");
                 }
             } else {
                 $form_error = "The password entered is incorrect.";

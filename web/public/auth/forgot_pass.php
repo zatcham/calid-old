@@ -6,6 +6,7 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Account.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Email.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -26,8 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (Account::doesUsernameExist($_POST["username"])) { // check if user exists
                 if (Account::forgotPassword($_POST["username"])) {
                     $success = "If this user exists, a password reset email has been sent. Please check your junk folder if you haven't recieved it";
+                    $usern = $_POST["username"];
+                    Logging::log("info", "Forgot password email sent for user $usern");
                 } else {
                     $errors = "Error: An unexpected error occured";
+                    $usern = $_POST["username"];
+                    Logging::log("error", "Error occured in auth/forgot_pass. Type: Forgot Password Function, Details: Username to reset: $usern");
                 }
             } else {
                 $success = "If this user exists, a password reset email has been sent. Please check your junk folder if you haven't recieved it";

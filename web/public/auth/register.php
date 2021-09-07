@@ -6,6 +6,7 @@ require_once $document_root . '\include\classes\Database.php';
 require_once $document_root . '\include\classes\Account.php';
 require_once $document_root . '\include\classes\Auth.php';
 require_once $document_root . '\include\classes\Email.php';
+require_once $document_root . '\include\classes\Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -54,16 +55,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // sucess
                         if (Account::sendVerifyEmail($x, $_POST['email'], $_POST['username'])) {
                             $form_success = "Account created successfully. Redirecting you to the login screen...";
+                            $email = $_POST['email'];
+                            $username = $_POST['username'];
+                            Logging::log("info", "Account created successfully in auth/register. Details: User ID: $x, Username: $username, Email: $email");
                             header("refresh:3 url=login.php");
+
                         } else {
                             $form_error = "An unexpected error occured when sending the verification email.";
-                            // TODO : logging
+                            $email = $_POST['email'];
+                            $username = $_POST['username'];
+                            Logging::log("error", "Error occured in auth/register. Type: Verification email sending, Details: User ID: $x, Username: $username, Email: $email");
                         }
                     } else {
                         $form_error = "An unexpected error occured.";
+                        $email = $_POST['email'];
+                        $username = $_POST['username'];
+                        Logging::log("error", "Error occured in auth/register. Type: Access key verification, Details: User ID: $x, Username: $username, Email: $email");
                     }
                 } else {
                     $form_error = "An unexpected error occured whilst attempting to create your account.";
+                    $email = $_POST['email'];
+                    $username = $_POST['username'];
+                    Logging::log("error", "Error occured in auth/register. Type: Account Creation, Details: Username: $username, Email: $email");
                 }
             } else {
                 $form_error = "Error: The access code entered is incorrect.";
