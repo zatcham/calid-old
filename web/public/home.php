@@ -1,10 +1,10 @@
 <?php
-$document_root = $_SERVER['DOCUMENT_ROOT'];
-require_once $document_root . '\vendor\autoload.php';
-require_once $document_root . '\include\classes\Database.php';
-require_once $document_root . '\include\classes\Sensor.php';
-require_once $document_root . '\include\classes\Auth.php';
-require_once $document_root . '\include\classes\Graph.php';
+
+require_once __DIR__  . '\..\vendor\autoload.php';
+require_once __DIR__  . '\..\include\classes\Database.php';
+require_once __DIR__  . '\..\include\classes\Sensor.php';
+require_once __DIR__  . '\..\include\classes\Auth.php';
+require_once __DIR__  . '\..\include\classes\Graph.php';
 
 
 use Twig\Environment;

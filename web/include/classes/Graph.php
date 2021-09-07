@@ -1,9 +1,8 @@
 <?php
 
-$document_root = $_SERVER['DOCUMENT_ROOT'];
-require_once ($document_root . "/include/variables.php");
-require_once ($document_root . "/vendor/autoload.php");
-require_once ($document_root . "/include/classes/Account.php");
+require_once __DIR__  . '\..\variables.php';
+require_once __DIR__  . '\..\..\vendor\autoload.php';
+require_once ("Account.php");
 
 use PhpUnitConversion\Unit\Temperature;
 
