@@ -29,49 +29,57 @@ $user_roles = Account::getListOfUserRoles();
 $form_error = $form_success = "";
 
 // form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST)) {
-        if (empty($_POST['uname'])) {
-            $form_error = "Error: you must enter a username.";
-        }
-        if (empty($_POST['inp-email'])) {
-            $form_error = "Error: you must enter an email address.";
-        }
-        if (empty($_POST['inp-cpassword'])) {
-            $form_error = "Error: you must enter a password.";
-        }
-        if (empty($_POST['inp-cnpassword'])) {
-            $form_error = "Error: you must confirm the password.";
-        }
-        if ($_POST['inp-cpassword'] != $_POST['inp-cnpassword']) {
-            $form_error = "Error: the passwords entered must match.";
-        }
-        if (strlen($_POST['inp-cpassword']) < 8) {
-            $form_error = "Error: the passwords entered must be a minimum of 8 characters.";
-        }
-        if ($form_error == "") { // only continue if no errors
-            if ($x = Account::createNewUser($_POST['uname'], $_POST['inp-email'], $_POST['inp-cpassword'], $_POST['role-select'])) {
-                if ($x != False) {
-                    $form_success = "User created successfully... redirecting you";
-                    $c_usr = $_POST['uname'];
-                    $c_em = $_POST['inp-email'];
-                    Logging::log("info", "User created successfully in account/new_user. Details: User ID: $x, ID for user created: $x, Username for user created: $c_usr, Email for user created: $c_em ");
-                    header("refresh:3 url=edit_user.php?user=$x"); // waits 3s before redirect
+
+if (Auth::isUserAdmin($userid) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (!empty($_POST)) {
+            if (empty($_POST['uname'])) {
+                $form_error = "Error: you must enter a username.";
+            }
+            if (empty($_POST['inp-email'])) {
+                $form_error = "Error: you must enter an email address.";
+            }
+            if (empty($_POST['inp-cpassword'])) {
+                $form_error = "Error: you must enter a password.";
+            }
+            if (empty($_POST['inp-cnpassword'])) {
+                $form_error = "Error: you must confirm the password.";
+            }
+            if ($_POST['inp-cpassword'] != $_POST['inp-cnpassword']) {
+                $form_error = "Error: the passwords entered must match.";
+            }
+            if (strlen($_POST['inp-cpassword']) < 8) {
+                $form_error = "Error: the passwords entered must be a minimum of 8 characters.";
+            }
+            if ($form_error == "") { // only continue if no errors
+                if ($x = Account::createNewUser($_POST['uname'], $_POST['inp-email'], $_POST['inp-cpassword'], $_POST['role-select'])) {
+                    if ($x != False) {
+                        $form_success = "User created successfully... redirecting you";
+                        $c_usr = $_POST['uname'];
+                        $c_em = $_POST['inp-email'];
+                        Logging::log("info", "User created successfully in account/new_user. Details: User ID: $x, ID for user created: $x, Username for user created: $c_usr, Email for user created: $c_em ");
+                        header("refresh:3 url=edit_user.php?user=$x"); // waits 3s before redirect
+                    } else {
+                        $form_error = "An unexpected error occured whilst trying to create the user";
+                        $c_usr = $_POST['uname'];
+                        $c_em = $_POST['inp-email'];
+                        Logging::log("error", "Problem occured in account/new_user, Type: Issue creating user, Details: User ID: $x, Username for user to create: $c_usr, Email for user to create: $c_em ");
+                    }
                 } else {
                     $form_error = "An unexpected error occured whilst trying to create the user";
                     $c_usr = $_POST['uname'];
                     $c_em = $_POST['inp-email'];
                     Logging::log("error", "Problem occured in account/new_user, Type: Issue creating user, Details: User ID: $x, Username for user to create: $c_usr, Email for user to create: $c_em ");
                 }
-            } else {
-                $form_error = "An unexpected error occured whilst trying to create the user";
-                $c_usr = $_POST['uname'];
-                $c_em = $_POST['inp-email'];
-                Logging::log("error", "Problem occured in account/new_user, Type: Issue creating user, Details: User ID: $x, Username for user to create: $c_usr, Email for user to create: $c_em ");
             }
         }
     }
+} else {
+    Logging::log("error", "Problem occured in account/new_user, user is unauthorised. Details: User IDL $x");
+    header ("Location: ../error/403.html");
+    exit();
 }
+
 
 // render page from template
 try {
