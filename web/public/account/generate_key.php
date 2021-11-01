@@ -4,8 +4,8 @@ require_once __DIR__  . '/../../vendor/autoload.php'; // necesary classes import
 require_once __DIR__  . '/../../include/classes/Database.php';
 require_once __DIR__  . '/../../include/classes/Sensor.php';
 require_once __DIR__  . '/../../include/classes/Auth.php';
-require_once __DIR__  . '/../../include/classes\Account.php';
-require_once __DIR__  . '\..\..\include\classes\Logging.php';
+require_once __DIR__  . '/../../include/classes/Account.php';
+require_once __DIR__  . '/../../include/classes/Logging.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
